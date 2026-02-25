@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Center</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>🏢 Mission Control</h1>
+        <nav class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('dashboard')">Dashboard</button>
+            <button class="tab-btn" onclick="switchTab('command-center')">Command Center</button>
+        </nav>
+    </header>
+    <main>
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <section id="agent-cards-summary">
+                <!-- Summary of agents -->
+            </section>
+            <section id="executive-decisions-summary">
+                <!-- Summary of decisions -->
+            </section>
+        </div>
+
+        <!-- Command Center Tab -->
+        <div id="command-center" class="tab-content">
+            <section id="agent-grid" class="grid">
+                <!-- Detailed agent cards -->
+            </section>
+            
+            <section id="executive-decisions">
+                <h2>Executive Decisions</h2>
+                <ul id="decisions-list">
+                    <!-- Decision items -->
+                </ul>
+            </section>
+        </div>
+
+        <!-- Detail Panel -->
+        <div id="detail-panel" class="detail-panel">
+            <button class="close-btn" onclick="closeDetailPanel()">×</button>
+            <div id="agent-details"></div>
+            <button class="action-btn" onclick="openTaskModal()">Send Task</button>
+        </div>
+
+        <!-- Task Modal -->
+        <div id="send-task-modal" class="modal">
+            <div class="modal-content">
+                <h2>Send Task</h2>
+                <textarea id="task-area" placeholder="Enter task instructions..."></textarea>
+                <div class="modal-actions">
+                    <button id="confirm-task" onclick="submitTask()">Send Task</button>
+                    <button id="close-modal" onclick="closeModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
