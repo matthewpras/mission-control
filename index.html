@@ -1065,7 +1065,9 @@
         /* --- CONFIG --- */
         const SUPABASE_URL = 'https://qawxadldkxanuzvzrddk.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhd3hhZGxka3hhbnV6dnpyZGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5NTg0OTAsImV4cCI6MjA4NzUzNDQ5MH0.W0VgGT6m3uLUlgk7DadJP_ZCTh-Vn4lc7jl6kkFC-8E';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        // Use a different name to avoid collision with global 'supabase' from SDK
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const TARGET_GOAL = 2000;
         const DEADLINE = new Date("2026-05-01");
@@ -1167,17 +1169,17 @@
             document.getElementById('cloud-status').classList.add('online');
 
             // Realtime setup
-            supabase.channel('room1')
+            sb.channel('room1')
             .on('postgres_changes', { event: '*', schema: 'public' }, () => fetchData())
             .subscribe();
         }
 
         async function fetchData() {
             try {
-                const { data: rev, error: revError } = await supabase.from('revenue').select('*').order('date', { ascending: false });
-                const { data: leads, error: leadsError } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
-                const { data: supabaseTasks, error: tasksError } = await supabase.from('tasks').select('*').order('date', { ascending: false });
-                const { data: supabaseMeetings, error: meetingsError } = await supabase.from('board_meetings').select('*').order('date', { ascending: false });
+                const { data: rev, error: revError } = await sb.from('revenue').select('*').order('date', { ascending: false });
+                const { data: leads, error: leadsError } = await sb.from('leads').select('*').order('created_at', { ascending: false });
+                const { data: supabaseTasks, error: tasksError } = await sb.from('tasks').select('*').order('date', { ascending: false });
+                const { data: supabaseMeetings, error: meetingsError } = await sb.from('board_meetings').select('*').order('date', { ascending: false });
                 
                 if (!revError && !leadsError) {
                     renderDashboard(rev || [], leads || []);
@@ -1313,7 +1315,7 @@
 
             // Persist to Supabase if UUID (string)
             if (typeof id === 'string' && id.length > 5) {
-                await supabase.from('tasks').update({ status: newStatus }).match({ id });
+                await sb.from('tasks').update({ status: newStatus }).match({ id });
             } else {
                 localStorage.setItem('mc_tasks', JSON.stringify(tasks));
             }
@@ -1324,7 +1326,7 @@
             const grid = document.getElementById('agent-grid');
             grid.innerHTML = agents.map(agent => `
                 <div class="card" style="cursor: pointer" onclick="openAgentPanel('${agent.id}')">
-                    <div class="card-accent" style="background: ${agent.status === 'online' ? 'var(--success)' : (agent.status === 'busy' ? 'var(--warning)' : 'var(--text-muted)')} छ"></div>
+                    <div class="card-accent" style="background: ${agent.status === 'online' ? 'var(--success)' : (agent.status === 'busy' ? 'var(--warning)' : 'var(--text-muted)')}"></div>
                     <div class="metric-label">
                         <div class="status-dot ${agent.status}"></div>
                         ${agent.role}
@@ -1422,7 +1424,7 @@
 
             if (!title) return;
 
-            await supabase.from('leads').insert([{
+            await sb.from('leads').insert([{
                 title, category, potential_profit: parseFloat(profit), status
             }]);
 
@@ -1434,7 +1436,7 @@
             const amount = prompt("Amount ($):");
             if (!source || !amount) return;
 
-            await supabase.from('revenue').insert([{
+            await sb.from('revenue').insert([{
                 source, amount: parseFloat(amount), date: new Date().toISOString().split('T')[0]
             }]);
         }
