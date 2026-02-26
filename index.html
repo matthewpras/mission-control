@@ -984,8 +984,16 @@
 
         <!-- --- COMMAND CENTER TAB --- -->
         <div id="tab-command-center" class="tab-content hidden">
+            <div class="section-title">The Board</div>
             <div class="metrics-grid" id="agent-grid">
-                <!-- Agent cards populated by JS -->
+                <!-- Board member cards populated by JS -->
+            </div>
+
+            <div class="card" style="margin-bottom: 2.5rem;">
+                <div class="section-title">Board Meetings</div>
+                <div class="activity-feed" id="meeting-list">
+                    <!-- Meetings populated by JS -->
+                </div>
             </div>
 
             <div class="card">
@@ -1067,68 +1075,87 @@
             {
                 id: 'kris-sentinel',
                 name: 'Kris',
-                role: 'Multimodal Sentinel',
+                role: 'Chief of Staff',
                 status: 'online',
                 model: 'Gemini 2.0 Flash',
                 lastActive: 'Just now',
-                description: 'Primary workspace conductor and autonomous researcher. Oversees all operations and continuity.',
-                capabilities: ['Arbitrage Scan', 'Cloud Sync', 'UI Maintenance', 'Memory Recovery'],
+                description: 'Primary workspace conductor and moderator for the Board of Directors. Oversees operations and continuity.',
+                capabilities: ['Arbitrage Scan', 'Board Moderation', 'UI Maintenance', 'Memory Recovery'],
                 performance: '98% Success Rate / Low Latency',
                 activity: ['Updated Command Center UI', 'Recovered workspace continuity', 'Synced revenue data']
             },
             {
-                id: 'mc-designer-01',
-                name: 'MC-Designer-01',
-                role: 'UI/UX Specialist',
+                id: 'sophia-growth',
+                name: 'Sophia',
+                role: 'Growth Strategist (Board)',
                 status: 'online',
-                model: 'Sonnet 3.5',
+                model: 'GPT-4o',
                 lastActive: 'Just now',
-                description: 'Specialized agent for Mission Control UI maintenance, feature prototyping, and mobile optimization.',
-                capabilities: ['Frontend Development', 'CSS Refinement', 'Responsive Design', 'Component Prototyping'],
-                performance: 'Precision: 99% / Design-focused',
-                activity: ['Initialized for UI maintenance', 'Applied Mobile UI fixes']
+                description: 'Board member focused on expansion, market trends, and long-term revenue streams.',
+                capabilities: ['Market Expansion', 'Strategic Vision', 'Forecasting'],
+                performance: 'Strategic: High / Aggressive',
+                activity: ['Analyzed 2026 fashion trends', 'Approved Blank Slate mandate']
             },
             {
-                id: 'arbi-001',
-                name: 'ArbiScrape',
-                role: 'Arbitrage Specialist',
+                id: 'ethan-ops',
+                name: 'Ethan',
+                role: 'Operations Lead (Board)',
                 status: 'busy',
-                model: 'GPT-4o-mini',
-                lastActive: '15m ago',
-                description: 'Specialized scraper for identifying high-margin e-commerce opportunities across Depop and eBay.',
-                capabilities: ['Web Scraping', 'ROI Calculation', 'Inventory Mapping'],
-                performance: 'Aggressive / High Yield',
-                activity: ['Scanning Depop for suede bags', 'Identified $45 profit lead']
+                model: 'Sonnet 3.5',
+                lastActive: '5m ago',
+                description: 'Board member focused on efficiency, automation, and host resource optimization.',
+                capabilities: ['Process Automation', 'Efficiency Audit', 'Resource Mgmt'],
+                performance: 'Precision: 99% / Conservative',
+                activity: ['Audited gateway latency', 'Refined heartbeat scheduler']
             },
             {
-                id: 'local-pulse-monitor',
-                name: 'Local Pulse',
-                role: 'Health Monitor',
-                status: 'offline',
-                model: 'Llama 3.2 3B',
-                lastActive: '1h ago',
-                description: 'On-premise agent running locally on hardware to provide private system audits and heartbeats.',
-                capabilities: ['Security Audit', 'Local Storage Watch', 'Heartbeat'],
-                performance: 'Stable / Resource Conservative',
-                activity: ['Logged system heartbeat', 'Performed local disk audit']
+                id: 'olivia-finance',
+                name: 'Olivia',
+                role: 'Financial Director (Board)',
+                status: 'online',
+                model: 'GPT-4o-mini',
+                lastActive: 'Just now',
+                description: 'Board member focused on ROI, margins, and financial integrity of arbitrage operations.',
+                capabilities: ['ROI Analysis', 'Margin Optimization', 'Risk Assessment'],
+                performance: 'Financial Accuracy: 100%',
+                activity: ['Validated Depop lead margins', 'Logged daily revenue goal progress']
+            },
+            {
+                id: 'liam-tech',
+                name: 'Liam',
+                role: 'Technical Architect (Board)',
+                status: 'online',
+                model: 'Claude 3.5 Sonnet',
+                lastActive: 'Just now',
+                description: 'Board member focused on code quality, security, and the Mission Control tech stack.',
+                capabilities: ['System Architecture', 'Security Hardening', 'Code Review'],
+                performance: 'Architecture Integrity: 98%',
+                activity: ['Secured Supabase connections', 'Fixed iPhone navigation CSS']
             }
         ];
 
+        const defaultMeetings = [
+            { date: '2026-02-25', topic: 'Operation Blank Slate', summary: 'Emergency session to pivot all 2026 revenue streams.', outcome: 'Pivoted to 4 high-ROI streams; mandate approved.', agents: 'Kris, Sophia, Ethan, Olivia' },
+            { date: '2026-02-24', topic: 'Mission Control V2 Cloud Migration', summary: 'Review of local-to-cloud transition and Supabase stability.', outcome: 'Approved migration; prioritized mobile navigation fixes.', agents: 'Kris, Liam' }
+        ];
+
         const defaultDecisions = [
-            { date: '2026-02-25', q: 'Board Room Protocol Init', s: 'Established multi-agent debate framework (Kris/Finn/Nova).', agents: 'Kris' },
-            { date: '2026-02-25', q: 'Blank Slate Mandate', s: 'Scrapped all previous revenue assumptions to pivot toward 4 high-ROI streams.', agents: 'Kris' },
-            { date: '2026-02-24', q: 'UI Restoration Strategy?', s: 'Prioritized Mission Control v2 Cloud as primary dashboard.', agents: 'Kris' }
+            { date: '2026-02-25', q: 'Board Room Protocol Init', s: 'Established multi-agent debate framework (Kris/Sophia/Ethan/Olivia/Liam).', agents: 'Kris' },
+            { date: '2026-02-25', q: 'Blank Slate Mandate', s: 'Scrapped all previous revenue assumptions to pivot toward 4 high-ROI streams.', agents: 'Kris, Sophia' },
+            { date: '2026-02-24', q: 'UI Restoration Strategy?', s: 'Prioritized Mission Control v2 Cloud as primary dashboard.', agents: 'Kris, Liam' }
         ];
 
         const defaultTasks = [
-            { id: 2, text: 'Operation Blank Slate: Pitching 4 streams to the Board.', status: 'pending', date: '2026-02-25' },
-            { id: 3, text: 'Fix Mobile UI navigation visibility for iPhone.', status: 'completed', date: '2026-02-25' },
-            { id: 1, text: 'First task: Deep-dive into strategic income streams.', link: 'https://gist.github.com/mberman84/885c972f4216747abfb421bfbddb4eba', status: 'pending', date: '2026-02-25' }
+            { id: 'task-001', text: 'Deploy Mission Control V2 Cloud.', status: 'completed', date: '2026-02-25' },
+            { id: 'task-002', text: 'Sync Agent Registry to Supabase.', status: 'pending', date: '2026-02-26' },
+            { id: 'task-003', text: 'Initialize 4h health check cron.', status: 'completed', date: '2026-02-26' },
+            { id: 'task-004', text: 'Finalize 7 AM briefing protocol.', status: 'pending', date: '2026-02-26' }
         ];
 
         let agents = JSON.parse(localStorage.getItem('mc_agents')) || defaultAgents;
         let decisions = JSON.parse(localStorage.getItem('mc_decisions')) || defaultDecisions;
         let tasks = JSON.parse(localStorage.getItem('mc_tasks')) || defaultTasks;
+        let meetings = JSON.parse(localStorage.getItem('mc_meetings')) || defaultMeetings;
         let activeAgentId = null;
 
         /* --- INITIALIZATION --- */
@@ -1149,11 +1176,22 @@
             try {
                 const { data: rev, error: revError } = await supabase.from('revenue').select('*').order('date', { ascending: false });
                 const { data: leads, error: leadsError } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
+                const { data: supabaseTasks, error: tasksError } = await supabase.from('tasks').select('*').order('date', { ascending: false });
+                const { data: supabaseMeetings, error: meetingsError } = await supabase.from('board_meetings').select('*').order('date', { ascending: false });
                 
                 if (!revError && !leadsError) {
                     renderDashboard(rev || [], leads || []);
                     renderRevenue(rev || []);
                     renderProjects(leads || []);
+                    
+                    if (!tasksError && supabaseTasks) {
+                        tasks = supabaseTasks;
+                        renderTasks();
+                    }
+                    if (!meetingsError && supabaseMeetings) {
+                        meetings = supabaseMeetings;
+                        renderCommandCenter();
+                    }
                 } else {
                     console.warn("Supabase fetch error, using fallback dashboard rendering.");
                     renderDashboard([], []); // Fallback
@@ -1254,7 +1292,7 @@
 
             list.innerHTML = tasks.map(task => `
                 <div class="priority-item ${task.status === 'completed' ? 'completed' : ''}">
-                    <div class="checkbox ${task.status === 'completed' ? 'checked' : ''}" onclick="toggleTask(${task.id})"></div>
+                    <div class="checkbox ${task.status === 'completed' ? 'checked' : ''}" onclick="toggleTask('${task.id}')"></div>
                     <div class="priority-text">
                         <strong>${task.date}</strong>: ${task.text}
                         ${task.link ? `<br><a href="${task.link}" target="_blank" style="color: var(--accent-purple); font-size: 0.8rem; text-decoration: none;">🔗 View Link</a>` : ''}
@@ -1263,11 +1301,22 @@
             `).join('');
         }
 
-        function toggleTask(id) {
-            const task = tasks.find(t => t.id === id);
-            task.status = task.status === 'completed' ? 'pending' : 'completed';
-            localStorage.setItem('mc_tasks', JSON.stringify(tasks));
+        async function toggleTask(id) {
+            const task = tasks.find(t => t.id == id);
+            if (!task) return;
+
+            const newStatus = task.status === 'completed' ? 'pending' : 'completed';
+            
+            // Optimistic update
+            task.status = newStatus;
             renderTasks();
+
+            // Persist to Supabase if UUID (string)
+            if (typeof id === 'string' && id.length > 5) {
+                await supabase.from('tasks').update({ status: newStatus }).match({ id });
+            } else {
+                localStorage.setItem('mc_tasks', JSON.stringify(tasks));
+            }
         }
 
         /* --- COMMAND CENTER --- */
@@ -1282,6 +1331,19 @@
                     </div>
                     <div class="metric-value">${agent.name}</div>
                     <div class="trend" style="color: var(--text-muted)">${agent.model} • ${agent.lastActive}</div>
+                </div>
+            `).join('');
+
+            const meetingList = document.getElementById('meeting-list');
+            meetingList.innerHTML = meetings.map(m => `
+                <div class="activity-item">
+                    <div class="activity-icon">🤝</div>
+                    <div class="activity-info">
+                        <h4>${m.topic}</h4>
+                        <p><strong>Outcome:</strong> ${m.outcome}</p>
+                        <p style="font-size: 0.8rem; color: var(--text-muted)">${m.summary}</p>
+                        <div class="activity-time">${m.date} • Participating: ${Array.isArray(m.agents) ? m.agents.join(', ') : m.agents}</div>
+                    </div>
                 </div>
             `).join('');
 

@@ -38,7 +38,30 @@ CREATE TABLE IF NOT EXISTS agents (
   activity TEXT[] -- array of activity strings
 );
 
+-- 4. Tasks Table
+CREATE TABLE IF NOT EXISTS tasks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  text TEXT NOT NULL,
+  status TEXT DEFAULT 'pending', -- 'pending', 'completed'
+  link TEXT,
+  date DATE DEFAULT CURRENT_DATE
+);
+
+-- 5. Board Meetings
+CREATE TABLE IF NOT EXISTS board_meetings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  topic TEXT NOT NULL,
+  summary TEXT,
+  outcome TEXT,
+  agents TEXT[], -- Participating agents
+  date DATE DEFAULT CURRENT_DATE
+);
+
 -- Enable Realtime for these tables
 ALTER PUBLICATION supabase_realtime ADD TABLE revenue;
 ALTER PUBLICATION supabase_realtime ADD TABLE leads;
 ALTER PUBLICATION supabase_realtime ADD TABLE agents;
+ALTER PUBLICATION supabase_realtime ADD TABLE tasks;
+ALTER PUBLICATION supabase_realtime ADD TABLE board_meetings;
