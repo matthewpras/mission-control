@@ -984,8 +984,13 @@
 
         <!-- --- COMMAND CENTER TAB --- -->
         <div id="tab-command-center" class="tab-content hidden">
+            <div class="section-title">Leadership</div>
+            <div id="leadership-grid" style="margin-bottom: 2rem; display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+                <!-- Conductor card populated by JS -->
+            </div>
+
             <div class="section-title">The Board</div>
-            <div class="metrics-grid" id="agent-grid">
+            <div class="metrics-grid" id="board-grid" style="margin-bottom: 2.5rem;">
                 <!-- Board member cards populated by JS -->
             </div>
 
@@ -1323,8 +1328,22 @@
 
         /* --- COMMAND CENTER --- */
         function renderCommandCenter() {
-            const grid = document.getElementById('agent-grid');
-            grid.innerHTML = agents.map(agent => `
+            const leadershipGrid = document.getElementById('leadership-grid');
+            const boardGrid = document.getElementById('board-grid');
+
+            const leaderHtml = agents.filter(a => a.id === 'kris-sentinel').map(agent => `
+                <div class="card" style="cursor: pointer; border-color: var(--accent-purple); background: rgba(139, 92, 246, 0.05);" onclick="openAgentPanel('${agent.id}')">
+                    <div class="card-accent" style="background: var(--accent-purple)"></div>
+                    <div class="metric-label">
+                        <div class="status-dot ${agent.status}"></div>
+                        ${agent.role}
+                    </div>
+                    <div class="metric-value">${agent.name}</div>
+                    <div class="trend" style="color: var(--text-muted)">${agent.model} • ${agent.lastActive}</div>
+                </div>
+            `).join('');
+
+            const boardHtml = agents.filter(a => a.id !== 'kris-sentinel').map(agent => `
                 <div class="card" style="cursor: pointer" onclick="openAgentPanel('${agent.id}')">
                     <div class="card-accent" style="background: ${agent.status === 'online' ? 'var(--success)' : (agent.status === 'busy' ? 'var(--warning)' : 'var(--text-muted)')}"></div>
                     <div class="metric-label">
@@ -1335,6 +1354,9 @@
                     <div class="trend" style="color: var(--text-muted)">${agent.model} • ${agent.lastActive}</div>
                 </div>
             `).join('');
+
+            leadershipGrid.innerHTML = leaderHtml;
+            boardGrid.innerHTML = boardHtml;
 
             const meetingList = document.getElementById('meeting-list');
             meetingList.innerHTML = meetings.map(m => `
