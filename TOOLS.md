@@ -52,8 +52,11 @@ Things like:
 
 - home-server → 192.168.1.100, user: admin
 
-### TTS
+### Mission Control Automation
+- **Add Pipeline Lead**: `python scripts/add_lead.py --title "Title" --category "Cat" --profit 100`
+- **Health Monitor**: `python scripts/health_monitor.py`
 
+### TTS
 - Preferred voice: "Nova" (warm, slightly British)
 - Default speaker: Kitchen HomePod
 ```

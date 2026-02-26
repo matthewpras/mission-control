@@ -1491,18 +1491,37 @@
 
         /* --- ACTIONS --- */
         async function saveLead() {
-            const title = document.getElementById('lead-title').value;
-            const category = document.getElementById('lead-category').value;
-            const profit = document.getElementById('lead-profit').value;
-            const status = document.getElementById('lead-status').value;
+            const titleEl = document.getElementById('lead-title');
+            const categoryEl = document.getElementById('lead-category');
+            const profitEl = document.getElementById('lead-profit');
+            const statusEl = document.getElementById('lead-status');
+
+            const title = titleEl.value;
+            const category = categoryEl.value;
+            const profit = profitEl.value;
+            const status = statusEl.value;
 
             if (!title) return;
 
-            await sb.from('leads').insert([{
-                title, category, potential_profit: parseFloat(profit), status
-            }]);
+            try {
+                const { error } = await sb.from('leads').insert([{
+                    title, category, potential_profit: parseFloat(profit) || 0, status
+                }]);
 
-            closeModal('task-modal-overlay');
+                if (error) throw error;
+
+                // Clear fields
+                titleEl.value = '';
+                categoryEl.value = '';
+                profitEl.value = '';
+                
+                closeModal('task-modal-overlay');
+                await fetchData(); // Refresh data
+                alert('Lead added to pipeline.');
+            } catch (e) {
+                console.error("Save lead failed:", e);
+                alert('Failed to save lead: ' + e.message);
+            }
         }
 
         async function addRevPrompt() {
