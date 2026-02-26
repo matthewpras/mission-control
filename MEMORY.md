@@ -1,0 +1,1 @@
+CRITICAL: If I repeat 'Core Workflow Rules' or 'Status: System Green' more than once, I must immediately break the loop by providing one specific AliExpress supplier link or a 2026 revenue projection.

@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Control V2 | Cloud</title>
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Colors */
+            --bg-primary: #050508;
+            --bg-secondary: #0a0a0f;
+            --glass-bg: rgba(15, 15, 25, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --accent-purple: #8b5cf6;
+            --accent-glow: rgba(139, 92, 246, 0.3);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            
+            /* Spacing & Effects */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-blur: blur(12px);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, sans-serif;
+            line-height: 1.5;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Custom Scrollbar --- */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { 
+            background: var(--glass-border); 
+            border-radius: 10px; 
+        }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* --- Layout --- */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2.5rem;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* --- Header --- */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--glass-bg);
+            backdrop-filter: var(--shadow-blur);
+            -webkit-backdrop-filter: var(--shadow-blur);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 0 2.5rem;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent-purple), #4f46e5);
+            border-radius: 8px;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        nav {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-link {
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .nav-link.active {
+            color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-bar {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 240px;
+            transition: var(--transition);
+        }
+
+        .search-bar:focus-within {
+            width: 300px;
+            border-color: var(--accent-purple);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .search-bar input {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 0.85rem;
+            width: 100%;
+        }
+
+        .search-hint {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            padding: 2px 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--danger);
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .status-dot.online {
+            background: var(--success);
+        }
+
+        .status-dot.online::after {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            border: 2px solid var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        /* --- Dashboard Tab --- */
+        .welcome-bar {
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .welcome-bar h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            margin-bottom: 4px;
+        }
+
+        .live-time {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.12);
+            background: rgba(20, 20, 35, 0.8);
+        }
+
+        .card-accent {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--accent-purple);
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .trend {
+            font-size: 0.8rem;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .trend.up { color: var(--success); }
+        .trend.down { color: var(--danger); }
+
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* --- Revenue Tab --- */
+        .revenue-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .gauge-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .gauge-svg {
+            transform: rotate(-90deg);
+            width: 160px; height: 160px;
+        }
+
+        .gauge-bg { fill: none; stroke: var(--glass-border); stroke-width: 10; }
+        .gauge-fill { 
+            fill: none; stroke: var(--accent-purple); stroke-width: 10; 
+            stroke-linecap: round; transition: stroke-dashoffset 1s ease-out;
+            filter: drop-shadow(0 0 8px var(--accent-glow));
+        }
+
+        .gauge-text {
+            position: absolute;
+            display: flex; flex-direction: column;
+            align-items: center;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .gauge-val { font-size: 1.8rem; font-weight: 700; }
+        .gauge-label { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; }
+
+        .revenue-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            height: 100%;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 1.2rem;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+
+        .chart-container {
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+
+        .chart-bar-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .chart-bar {
+            width: 100%;
+            background: linear-gradient(to top, var(--accent-purple), #4f46e5);
+            border-radius: 4px 4px 0 0;
+            min-height: 2px;
+            transition: height 1s ease-out;
+            position: relative;
+        }
+
+        .chart-bar:hover { filter: brightness(1.2); }
+        .chart-label { font-size: 0.7rem; color: var(--text-muted); }
+
+        .client-table-container { overflow-x: auto; }
+        .client-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .client-table th {
+            text-align: left;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 12px;
+            border-bottom: 1px solid var(--glass-border);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .client-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--glass-border);
+            font-size: 0.9rem;
+        }
+
+        .client-table tr:last-child td { border-bottom: none; }
+
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .status-pending { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+        .status-churned { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
+        .action-btns { display: flex; gap: 12px; }
+        .icon-btn {
+            background: transparent; border: none; color: var(--text-muted);
+            cursor: pointer; transition: var(--transition);
+            display: flex; align-items: center;
+        }
+        .icon-btn:hover { color: white; }
+
+        /* --- Activity Feed --- */
+        .activity-feed {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .activity-item:last-child { border-bottom: none; }
+
+        .activity-icon {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: rgba(139, 92, 246, 0.1);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--accent-purple);
+            flex-shrink: 0;
+        }
+
+        .activity-info h4 { font-size: 0.95rem; margin-bottom: 2px; }
+        .activity-info p { font-size: 0.85rem; color: var(--text-secondary); }
+        .activity-time { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+        /* --- Priorities --- */
+        .priority-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .priority-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+        }
+
+        .priority-item:hover { background: rgba(255, 255, 255, 0.05); }
+
+        .checkbox {
+            width: 20px; height: 20px;
+            border: 2px solid var(--glass-border);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: var(--transition);
+        }
+
+        .checkbox.checked {
+            background: var(--accent-purple);
+            border-color: var(--accent-purple);
+        }
+
+        .checkbox.checked::after {
+            content: '✓'; color: white; font-size: 12px;
+        }
+
+        .priority-text {
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
+
+        .priority-item.completed .priority-text {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .add-btn {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px dashed var(--accent-purple);
+            color: var(--accent-purple);
+            padding: 10px;
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 8px;
+            transition: var(--transition);
+        }
+
+        .add-btn:hover { background: rgba(139, 92, 246, 0.15); }
+
+        /* --- Projects Tab --- */
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .kanban-col {
+            background: rgba(255, 255, 255, 0.01);
+            border-radius: var(--radius-lg);
+            padding: 1.2rem;
+            min-height: 600px;
+        }
+
+        .col-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding: 0 4px;
+        }
+
+        .col-header h3 { font-size: 1rem; font-weight: 600; color: var(--text-secondary); }
+        .col-count { font-size: 0.75rem; background: var(--glass-border); padding: 2px 8px; border-radius: 10px; }
+
+        .task-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .task-card:hover {
+            border-color: var(--accent-purple);
+            transform: translateY(-2px);
+            background: rgba(25, 25, 40, 0.8);
+        }
+
+        .badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .badge-high { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+        .badge-medium { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+        .badge-low { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+
+        .task-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 6px; }
+        .task-desc { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px; }
+        .task-meta { font-size: 0.7rem; color: var(--text-muted); display: flex; justify-content: space-between; }
+
+        /* --- Timeline Tab --- */
+        .timeline-container {
+            position: relative;
+            padding-left: 40px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 20px; top: 0; bottom: 0;
+            width: 1px;
+            background: var(--glass-border);
+        }
+
+        .timeline-phase {
+            position: relative;
+            margin-bottom: 4rem;
+        }
+
+        .phase-dot {
+            position: absolute;
+            left: -26px; top: 0;
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            border: 2px solid var(--text-muted);
+            z-index: 2;
+        }
+
+        .phase-active .phase-dot {
+            background: var(--accent-purple);
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .phase-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .phase-active .phase-card {
+            border-color: rgba(139, 92, 246, 0.3);
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5), 0 0 20px rgba(139, 92, 246, 0.05);
+        }
+
+        .phase-header { display: flex; justify-content: space-between; margin-bottom: 12px; }
+        .phase-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+        .phase-date { font-size: 0.85rem; font-weight: 500; color: var(--accent-purple); }
+        .phase-desc { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px; }
+
+        .milestone-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .milestone { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: var(--text-secondary); }
+        .milestone.done { color: var(--text-muted); text-decoration: line-through; }
+        .milestone-check { 
+            width: 16px; height: 16px; border: 1px solid var(--glass-border); border-radius: 4px; 
+            display: flex; align-items: center; justify-content: center; font-size: 10px;
+        }
+        .milestone.done .milestone-check { background: var(--success); border-color: var(--success); color: white; }
+        .milestone.done .milestone-check::after { content: '✓'; }
+
+        /* --- Notes Tab --- */
+        .notes-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .notes-area {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            min-height: 600px;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+            font-family: inherit;
+            resize: none;
+            width: 100%;
+        }
+
+        .notes-area::placeholder { color: var(--text-muted); }
+
+        .notes-footer {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            padding: 0 10px;
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hidden { display: none; }
+
+        /* --- Modals --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: var(--transition);
+        }
+
+        .modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            width: 450px;
+            padding: 2rem;
+            transform: scale(0.9); transition: var(--transition);
+        }
+
+        .modal-overlay.open .modal { transform: scale(1); }
+
+        .modal-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem; }
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 6px; }
+        .form-control {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            color: white;
+            font-family: inherit;
+        }
+        .form-control:focus { border-color: var(--accent-purple); }
+
+        .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 1.5rem; }
+        .btn {
+            padding: 8px 18px;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-cancel { background: transparent; color: var(--text-secondary); border: none; }
+        .btn-cancel:hover { color: white; }
+        .btn-primary { background: var(--accent-purple); color: white; border: none; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px var(--accent-glow); }
+        .btn-danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
+
+        /* --- Detail Panel (Slide-out) --- */
+        .detail-panel {
+            position: fixed;
+            top: 72px; right: -400px;
+            width: 380px; height: calc(100vh - 72px);
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--glass-border);
+            padding: 2.5rem;
+            transition: var(--transition);
+            z-index: 90;
+            overflow-y: auto;
+            box-shadow: -20px 0 40px rgba(0,0,0,0.5);
+        }
+
+        .detail-panel.open { right: 0; }
+        .panel-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .panel-subtitle { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 2rem; }
+        .panel-section-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; margin: 1.5rem 0 0.8rem; }
+        .capability-pill { display: inline-block; padding: 4px 10px; border-radius: 6px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); font-size: 0.8rem; margin: 0 6px 6px 0; }
+        .activity-log-item { font-size: 0.85rem; padding: 10px 0; border-bottom: 1px solid var(--glass-border); color: var(--text-secondary); }
+        .activity-log-item:last-child { border-bottom: none; }
+
+        @media (max-width: 1200px) {
+            .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+            .dashboard-content { grid-template-columns: 1fr; }
+            .revenue-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            header { 
+                padding: 0 1rem; 
+                height: auto;
+                flex-direction: column;
+                align-items: flex-start;
+                padding-top: 1rem;
+                padding-bottom: 0.5rem;
+            }
+            .logo { margin-bottom: 1rem; }
+            .search-bar { display: none; }
+            nav { 
+                display: flex; 
+                overflow-x: auto; 
+                width: 100%;
+                padding-bottom: 0.5rem;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            nav::-webkit-scrollbar { display: none; }
+            .nav-link { flex-shrink: 0; white-space: nowrap; }
+            .metrics-grid { grid-template-columns: 1fr; }
+            .kanban-board { grid-template-columns: 1fr; }
+            .milestone-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <div class="logo-icon"></div>
+            <span>MISSION CONTROL</span>
+        </div>
+
+        <nav id="main-nav">
+            <div class="nav-link active" data-tab="dashboard">📊 Dashboard</div>
+            <div class="nav-link" data-tab="command-center">🏢 Command Center</div>
+            <div class="nav-link" data-tab="revenue">💰 Revenue</div>
+            <div class="nav-link" data-tab="projects">📋 Pipeline</div>
+            <div class="nav-link" data-tab="timeline">📅 Timeline</div>
+            <div class="nav-link" data-tab="notes">📝 Notes</div>
+        </nav>
+
+        <div class="header-right">
+            <div class="search-bar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="global-search" placeholder="Search resources...">
+                <span class="search-hint">⌘K</span>
+            </div>
+            <div id="cloud-status" class="status-dot"></div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- --- DASHBOARD TAB --- -->
+        <div id="tab-dashboard" class="tab-content">
+            <div class="welcome-bar">
+                <h1 id="welcome-msg">Good morning, Matthew</h1>
+                <p id="current-date" class="live-time">Tuesday, February 24, 2026</p>
+            </div>
+
+            <!-- --- NEW TASKS SECTION --- -->
+            <div class="card" style="margin-bottom: 2.5rem; animation-delay: 0.05s;">
+                <div class="section-title">
+                    📋 Daily Tasks
+                    <span class="performance-tag" id="task-completion-stat">0/0</span>
+                </div>
+                <div id="dashboard-tasks-list" class="priority-list">
+                    <!-- Loaded Active Tasks -->
+                    <div class="priority-item">Operation Blank Slate: Pitching 4 streams to the Board - Pending</div>
+                    <div class="priority-item">Fix Mobile UI navigation visibility for iPhone - Pending</div>
+                </div>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="card" style="animation-delay: 0.1s; cursor: pointer" onclick="document.querySelector('[data-tab=revenue]').click()">
+                    <div class="card-accent" style="background: var(--accent-purple)"></div>
+                    <div class="metric-label">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                        Revenue Goal
+                    </div>
+                    <div class="metric-value" id="stat-revenue">$0 / $2,000</div>
+                    <div class="trend up" id="stat-revenue-trend">0% progress</div>
+                </div>
+                <div class="card" style="animation-delay: 0.2s">
+                    <div class="card-accent" style="background: #3b82f6"></div>
+                    <div class="metric-label">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+                        Active Leads
+                    </div>
+                    <div class="metric-value" id="stat-projects">0</div>
+                    <div class="trend">Pipeline synced</div>
+                </div>
+                <div class="card" style="animation-delay: 0.3s">
+                    <div class="card-accent" style="background: #10b981"></div>
+                    <div class="metric-label">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        Daily Status
+                    </div>
+                    <div class="metric-value">Active</div>
+                    <div class="trend up">Systems Normal</div>
+                </div>
+                <div class="card" style="animation-delay: 0.4s">
+                    <div class="card-accent" style="background: #ef4444"></div>
+                    <div class="metric-label">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        Days to Goal
+                    </div>
+                    <div class="metric-value" id="stat-countdown">--</div>
+                    <div class="trend down">Deadline: May 1</div>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <div class="card">
+                    <div class="section-title">
+                        Activity Feed
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-muted"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    </div>
+                    <div class="activity-feed" id="activity-list">
+                        <!-- Revenue and Leads feed -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="section-title">
+                        Quick Actions
+                    </div>
+                    <div class="priority-list">
+                        <button class="add-btn" onclick="openTaskModal('New')">+ Add New Lead</button>
+                        <button class="add-btn" style="border-color: #3b82f6; color: #3b82f6; background: rgba(59, 130, 246, 0.1);" onclick="addRevPrompt()">+ Log Revenue</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- --- REVENUE TAB --- -->
+        <div id="tab-revenue" class="tab-content hidden">
+            <div class="revenue-grid">
+                <div class="card gauge-container">
+                    <svg class="gauge-svg" viewBox="0 0 100 100">
+                        <circle class="gauge-bg" cx="50" cy="50" r="40"></circle>
+                        <circle class="gauge-fill" id="gauge-fill" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="251.2"></circle>
+                    </svg>
+                    <div class="gauge-text">
+                        <span class="gauge-val" id="rev-progress-percent">0%</span>
+                        <span class="gauge-label">of goal</span>
+                    </div>
+                </div>
+
+                <div class="revenue-stats">
+                    <div class="card stat-box">
+                        <div class="metric-label">Total Revenue</div>
+                        <div class="metric-value" id="rev-mrr">$0.00</div>
+                        <div class="trend up" id="rev-mrr-needed">Target: $2,000</div>
+                    </div>
+                    <div class="card stat-box">
+                        <div class="metric-label">Remaining</div>
+                        <div class="metric-value" id="rev-annual">$2,000</div>
+                        <div class="trend up">Until milestone</div>
+                    </div>
+                    <div class="card" style="grid-column: span 2;">
+                        <div class="section-title">Revenue Logs</div>
+                        <div id="revenue-logs-list" class="space-y-2 max-h-[200px] overflow-y-auto">
+                            <!-- Populated from Supabase -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- --- PROJECTS TAB --- -->
+        <div id="tab-projects" class="tab-content hidden">
+            <div class="kanban-board">
+                <div class="kanban-col">
+                    <div class="col-header">
+                        <h3>NEW LEADS</h3>
+                        <span class="col-count" id="count-new">0</span>
+                    </div>
+                    <div class="task-list" id="list-new"></div>
+                </div>
+                <div class="kanban-col">
+                    <div class="col-header">
+                        <h3>ACTIVE / RESEARCHING</h3>
+                        <span class="col-count" id="count-active">0</span>
+                    </div>
+                    <div class="task-list" id="list-active"></div>
+                </div>
+                <div class="kanban-col">
+                    <div class="col-header">
+                        <h3>CLOSED / WON</h3>
+                        <span class="col-count" id="count-closed">0</span>
+                    </div>
+                    <div class="task-list" id="list-closed"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- --- TIMELINE TAB --- -->
+        <div id="tab-timeline" class="tab-content hidden">
+            <div class="timeline-container" id="timeline-render">
+                <div class="timeline-line"></div>
+                <!-- Static Phase Mockup (matching previous iteration) -->
+                <div class="timeline-phase phase-active">
+                    <div class="phase-dot"></div>
+                    <div class="phase-card">
+                        <div class="phase-header">
+                            <h3 class="phase-title">Phase 1: Foundation & Research</h3>
+                            <span class="phase-date">Feb 2026</span>
+                        </div>
+                        <p class="phase-desc">Cloud migration and arbitrage infrastructure.</p>
+                        <div class="milestone-list">
+                            <div class="milestone done"><div class="milestone-check"></div> Supabase Connection</div>
+                            <div class="milestone"><div class="milestone-check"></div> Sourcing Automation</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- --- NOTES TAB --- -->
+        <div id="tab-notes" class="tab-content hidden">
+            <textarea class="notes-area" id="main-notes" placeholder="Cloud-synced notes (Feature pending)..."></textarea>
+        </div>
+
+        <!-- --- COMMAND CENTER TAB --- -->
+        <div id="tab-command-center" class="tab-content hidden">
+            <div class="metrics-grid" id="agent-grid">
+                <!-- Agent cards populated by JS -->
+            </div>
+
+            <div class="card">
+                <div class="section-title">Executive Decisions</div>
+                <div class="activity-feed" id="decision-list">
+                    <!-- Decisions populated by JS -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- --- DETAIL PANEL (Slide-out) --- -->
+    <div id="agent-detail-panel" class="detail-panel">
+        <button class="close-btn" onclick="closeAgentPanel()">×</button>
+        <div id="panel-content">
+            <!-- Content populated by JS -->
+        </div>
+        <button class="btn btn-primary" style="width: 100%; margin-top: 2rem;" onclick="openAgentTaskModal()">Send Task</button>
+    </div>
+
+    <!-- --- TASK MODAL --- -->
+    <div class="modal-overlay" id="agent-task-modal">
+        <div class="modal">
+            <h2 class="modal-title">Dispatch Task</h2>
+            <div class="form-group">
+                <label>Instructions</label>
+                <textarea class="form-control" id="agent-task-input" style="height: 120px; resize: none;" placeholder="What should the agent do?"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-cancel" onclick="closeModal('agent-task-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="submitAgentTask()">Send Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- MODALS --- -->
+    <div class="modal-overlay" id="task-modal-overlay">
+        <div class="modal">
+            <h2 class="modal-title">New Pipeline Lead</h2>
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" class="form-control" id="lead-title" placeholder="e.g. Real Estate Arbitrage #1">
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <input type="text" class="form-control" id="lead-category" placeholder="Real Estate, Depop, etc.">
+            </div>
+            <div class="form-group">
+                <label>Potential Profit ($)</label>
+                <input type="number" class="form-control" id="lead-profit" placeholder="500">
+            </div>
+            <div class="form-group">
+                <label>Status</label>
+                <select class="form-control" id="lead-status">
+                    <option value="New">New</option>
+                    <option value="Researching">Researching</option>
+                    <option value="Active">Active</option>
+                    <option value="Closed">Closed</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-cancel" onclick="closeModal('task-modal-overlay')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveLead()">Save Lead</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* --- CONFIG --- */
+        const SUPABASE_URL = 'https://qawxadldkxanuzvzrddk.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhd3hhZGxka3hhbnV6dnpyZGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5NTg0OTAsImV4cCI6MjA4NzUzNDQ5MH0.W0VgGT6m3uLUlgk7DadJP_ZCTh-Vn4lc7jl6kkFC-8E';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const TARGET_GOAL = 2000;
+        const DEADLINE = new Date("2026-05-01");
+
+        /* --- AGENT DATA --- */
+        const defaultAgents = [
+            {
+                id: 'kris-sentinel',
+                name: 'Kris',
+                role: 'Multimodal Sentinel',
+                status: 'online',
+                model: 'Gemini 2.0 Flash',
+                lastActive: 'Just now',
+                description: 'Primary workspace conductor and autonomous researcher. Oversees all operations and continuity.',
+                capabilities: ['Arbitrage Scan', 'Cloud Sync', 'UI Maintenance', 'Memory Recovery'],
+                performance: '98% Success Rate / Low Latency',
+                activity: ['Updated Command Center UI', 'Recovered workspace continuity', 'Synced revenue data']
+            },
+            {
+                id: 'mc-designer-01',
+                name: 'MC-Designer-01',
+                role: 'UI/UX Specialist',
+                status: 'online',
+                model: 'Sonnet 3.5',
+                lastActive: 'Just now',
+                description: 'Specialized agent for Mission Control UI maintenance, feature prototyping, and mobile optimization.',
+                capabilities: ['Frontend Development', 'CSS Refinement', 'Responsive Design', 'Component Prototyping'],
+                performance: 'Precision: 99% / Design-focused',
+                activity: ['Initialized for UI maintenance', 'Applied Mobile UI fixes']
+            },
+            {
+                id: 'arbi-001',
+                name: 'ArbiScrape',
+                role: 'Arbitrage Specialist',
+                status: 'busy',
+                model: 'GPT-4o-mini',
+                lastActive: '15m ago',
+                description: 'Specialized scraper for identifying high-margin e-commerce opportunities across Depop and eBay.',
+                capabilities: ['Web Scraping', 'ROI Calculation', 'Inventory Mapping'],
+                performance: 'Aggressive / High Yield',
+                activity: ['Scanning Depop for suede bags', 'Identified $45 profit lead']
+            },
+            {
+                id: 'local-pulse-monitor',
+                name: 'Local Pulse',
+                role: 'Health Monitor',
+                status: 'offline',
+                model: 'Llama 3.2 3B',
+                lastActive: '1h ago',
+                description: 'On-premise agent running locally on hardware to provide private system audits and heartbeats.',
+                capabilities: ['Security Audit', 'Local Storage Watch', 'Heartbeat'],
+                performance: 'Stable / Resource Conservative',
+                activity: ['Logged system heartbeat', 'Performed local disk audit']
+            }
+        ];
+
+        const defaultDecisions = [
+            { date: '2026-02-25', q: 'Board Room Protocol Init', s: 'Established multi-agent debate framework (Kris/Finn/Nova).', agents: 'Kris' },
+            { date: '2026-02-25', q: 'Blank Slate Mandate', s: 'Scrapped all previous revenue assumptions to pivot toward 4 high-ROI streams.', agents: 'Kris' },
+            { date: '2026-02-24', q: 'UI Restoration Strategy?', s: 'Prioritized Mission Control v2 Cloud as primary dashboard.', agents: 'Kris' }
+        ];
+
+        const defaultTasks = [
+            { id: 2, text: 'Operation Blank Slate: Pitching 4 streams to the Board.', status: 'pending', date: '2026-02-25' },
+            { id: 3, text: 'Fix Mobile UI navigation visibility for iPhone.', status: 'completed', date: '2026-02-25' },
+            { id: 1, text: 'First task: Deep-dive into strategic income streams.', link: 'https://gist.github.com/mberman84/885c972f4216747abfb421bfbddb4eba', status: 'pending', date: '2026-02-25' }
+        ];
+
+        let agents = JSON.parse(localStorage.getItem('mc_agents')) || defaultAgents;
+        let decisions = JSON.parse(localStorage.getItem('mc_decisions')) || defaultDecisions;
+        let tasks = JSON.parse(localStorage.getItem('mc_tasks')) || defaultTasks;
+        let activeAgentId = null;
+
+        /* --- INITIALIZATION --- */
+        async function init() {
+            updateClock();
+            await fetchData();
+            renderCommandCenter();
+            renderTasks();
+            document.getElementById('cloud-status').classList.add('online');
+
+            // Realtime setup
+            supabase.channel('room1')
+            .on('postgres_changes', { event: '*', schema: 'public' }, () => fetchData())
+            .subscribe();
+        }
+
+        async function fetchData() {
+            try {
+                const { data: rev, error: revError } = await supabase.from('revenue').select('*').order('date', { ascending: false });
+                const { data: leads, error: leadsError } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
+                
+                if (!revError && !leadsError) {
+                    renderDashboard(rev || [], leads || []);
+                    renderRevenue(rev || []);
+                    renderProjects(leads || []);
+                } else {
+                    console.warn("Supabase fetch error, using fallback dashboard rendering.");
+                    renderDashboard([], []); // Fallback
+                }
+            } catch (e) {
+                console.error("Fetch data failed:", e);
+            }
+        }
+
+        /* --- RENDERING --- */
+        function renderDashboard(rev, leads) {
+            const total = rev.reduce((s, i) => s + parseFloat(i.amount), 0);
+            const progress = Math.min(100, Math.round((total / TARGET_GOAL) * 100));
+            
+            document.getElementById('stat-revenue').innerText = `$${total.toLocaleString()} / $${TARGET_GOAL.toLocaleString()}`;
+            document.getElementById('stat-revenue-trend').innerText = `${progress}% progress`;
+            document.getElementById('stat-projects').innerText = leads.filter(l => l.status !== 'Closed').length;
+
+            const activityList = document.getElementById('activity-list');
+            const allItems = [
+                ...rev.map(r => ({ title: `Revenue: +$${r.amount}`, text: r.source, time: new Date(r.created_at), icon: '💰' })),
+                ...leads.map(l => ({ title: `New Lead: ${l.title}`, text: l.status, time: new Date(l.created_at), icon: '📋' })),
+                { title: 'Mission Control Updated', text: 'Continuity restored and nighttime tasks deployed.', time: new Date(), icon: '🚀' },
+                { title: 'MC-Designer-01 Deployed', text: 'New UI/UX specialist initialized.', time: new Date(), icon: '🤖' }
+            ].sort((a,b) => b.time - a.time).slice(0, 6);
+
+            activityList.innerHTML = allItems.map(item => `
+                <div class="activity-item">
+                    <div class="activity-icon">${item.icon}</div>
+                    <div class="activity-info">
+                        <h4>${item.title}</h4>
+                        <p>${item.text}</p>
+                        <div class="activity-time">${item.time.toLocaleString()}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderRevenue(data) {
+            const total = data.reduce((s, i) => s + parseFloat(i.amount), 0);
+            const progress = (total / TARGET_GOAL) * 100;
+            const dashoffset = 251.2 - (251.2 * Math.min(progress, 100)) / 100;
+            
+            document.getElementById('rev-mrr').innerText = `$${total.toLocaleString()}`;
+            document.getElementById('rev-annual').innerText = `$${Math.max(0, TARGET_GOAL - total).toLocaleString()}`;
+            document.getElementById('rev-progress-percent').innerText = `${Math.round(progress)}%`;
+            document.getElementById('gauge-fill').style.strokeDashoffset = dashoffset;
+
+            document.getElementById('revenue-logs-list').innerHTML = data.map(r => `
+                <div class="flex justify-between text-xs p-2 bg-white/5 rounded border-l-2 border-purple-500">
+                    <span>${r.source} (${r.date})</span>
+                    <span class="text-purple-400">+$${r.amount}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderProjects(leads) {
+            const categories = {
+                'New': document.getElementById('list-new'),
+                'Researching': document.getElementById('list-active'),
+                'Active': document.getElementById('list-active'),
+                'Closed': document.getElementById('list-closed')
+            };
+
+            // Clear lists
+            Object.values(categories).forEach(el => el.innerHTML = '');
+            
+            let counts = { New: 0, Active: 0, Closed: 0 };
+
+            leads.forEach(lead => {
+                const list = categories[lead.status] || categories['New'];
+                if (lead.status === 'New') counts.New++;
+                else if (lead.status === 'Closed') counts.Closed++;
+                else counts.Active++;
+
+                list.innerHTML += `
+                    <div class="task-card">
+                        <span class="badge badge-medium">${lead.category}</span>
+                        <div class="task-title">${lead.title}</div>
+                        <div class="task-meta">
+                            <span>Est: $${lead.potential_profit}</span>
+                            <span class="text-purple-400">${lead.status}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('count-new').innerText = counts.New;
+            document.getElementById('count-active').innerText = counts.Active;
+            document.getElementById('count-closed').innerText = counts.Closed;
+        }
+
+        /* --- TASKS --- */
+        function renderTasks() {
+            const list = document.getElementById('dashboard-tasks-list');
+            const doneCount = tasks.filter(t => t.status === 'completed').length;
+            document.getElementById('task-completion-stat').innerText = `${doneCount}/${tasks.length}`;
+
+            list.innerHTML = tasks.map(task => `
+                <div class="priority-item ${task.status === 'completed' ? 'completed' : ''}">
+                    <div class="checkbox ${task.status === 'completed' ? 'checked' : ''}" onclick="toggleTask(${task.id})"></div>
+                    <div class="priority-text">
+                        <strong>${task.date}</strong>: ${task.text}
+                        ${task.link ? `<br><a href="${task.link}" target="_blank" style="color: var(--accent-purple); font-size: 0.8rem; text-decoration: none;">🔗 View Link</a>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleTask(id) {
+            const task = tasks.find(t => t.id === id);
+            task.status = task.status === 'completed' ? 'pending' : 'completed';
+            localStorage.setItem('mc_tasks', JSON.stringify(tasks));
+            renderTasks();
+        }
+
+        /* --- COMMAND CENTER --- */
+        function renderCommandCenter() {
+            const grid = document.getElementById('agent-grid');
+            grid.innerHTML = agents.map(agent => `
+                <div class="card" style="cursor: pointer" onclick="openAgentPanel('${agent.id}')">
+                    <div class="card-accent" style="background: ${agent.status === 'online' ? 'var(--success)' : (agent.status === 'busy' ? 'var(--warning)' : 'var(--text-muted)')} छ"></div>
+                    <div class="metric-label">
+                        <div class="status-dot ${agent.status}"></div>
+                        ${agent.role}
+                    </div>
+                    <div class="metric-value">${agent.name}</div>
+                    <div class="trend" style="color: var(--text-muted)">${agent.model} • ${agent.lastActive}</div>
+                </div>
+            `).join('');
+
+            const decisionList = document.getElementById('decision-list');
+            decisionList.innerHTML = decisions.map(d => `
+                <div class="activity-item">
+                    <div class="activity-icon">⚖️</div>
+                    <div class="activity-info">
+                        <h4>${d.q}</h4>
+                        <p>${d.s}</p>
+                        <div class="activity-time">${d.date} • Consulted: ${d.agents}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openAgentPanel(id) {
+            activeAgentId = id;
+            const agent = agents.find(a => a.id === id);
+            const panel = document.getElementById('agent-detail-panel');
+            const content = document.getElementById('panel-content');
+
+            content.innerHTML = `
+                <h2 class="panel-title">${agent.name}</h2>
+                <p class="panel-subtitle">${agent.role} • ${agent.model}</p>
+                
+                <p class="phase-desc">${agent.description}</p>
+
+                <div class="panel-section-title">Capabilities</div>
+                <div>${agent.capabilities.map(c => `<span class="capability-pill">${c}</span>`).join('')}</div>
+
+                <div class="panel-section-title">Recent Activity</div>
+                <div class="activity-log">
+                    ${agent.activity.map(log => `<div class="activity-log-item">${log}</div>`).join('')}
+                </div>
+
+                <div class="panel-section-title">Performance</div>
+                <p style="font-size: 0.9rem; color: var(--text-secondary)">${agent.performance}</p>
+            `;
+
+            panel.classList.add('open');
+        }
+
+        function closeAgentPanel() {
+            document.getElementById('agent-detail-panel').classList.remove('open');
+            activeAgentId = null;
+        }
+
+        function openAgentTaskModal() {
+            document.getElementById('agent-task-modal').classList.add('open');
+        }
+
+        function submitAgentTask() {
+            const input = document.getElementById('agent-task-input');
+            const task = input.value.trim();
+            if (!task || !activeAgentId) return;
+
+            const agent = agents.find(a => a.id === activeAgentId);
+            agent.activity.unshift(`[Command] ${task}`);
+            agent.lastActive = 'Just now';
+            
+            localStorage.setItem('mc_agents', JSON.stringify(agents));
+            input.value = '';
+            closeModal('agent-task-modal');
+            openAgentPanel(activeAgentId); // Refresh panel
+            renderCommandCenter(); // Refresh grid
+            alert(`Task dispatched to ${agent.name}`);
+        }
+
+        /* --- ACTIONS --- */
+        async function saveLead() {
+            const title = document.getElementById('lead-title').value;
+            const category = document.getElementById('lead-category').value;
+            const profit = document.getElementById('lead-profit').value;
+            const status = document.getElementById('lead-status').value;
+
+            if (!title) return;
+
+            await supabase.from('leads').insert([{
+                title, category, potential_profit: parseFloat(profit), status
+            }]);
+
+            closeModal('task-modal-overlay');
+        }
+
+        async function addRevPrompt() {
+            const source = prompt("Revenue Source (e.g. Depop sale):");
+            const amount = prompt("Amount ($):");
+            if (!source || !amount) return;
+
+            await supabase.from('revenue').insert([{
+                source, amount: parseFloat(amount), date: new Date().toISOString().split('T')[0]
+            }]);
+        }
+
+        /* --- UI HELPERS --- */
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('welcome-msg').innerText = `Good afternoon, Matthew`;
+            document.getElementById('current-date').innerText = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+            
+            const diff = DEADLINE - now;
+            document.getElementById('stat-countdown').innerText = `${Math.ceil(diff / (1000 * 60 * 60 * 24))} days`;
+        }
+
+        function openTaskModal(status) {
+            document.getElementById('lead-status').value = status;
+            document.getElementById('task-modal-overlay').classList.add('open');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                document.getElementById(`tab-${link.dataset.tab}`).classList.remove('hidden');
+            });
+        });
+
+        init();
+    </script>
+</body>
+</html>

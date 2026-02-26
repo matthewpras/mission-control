@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Center</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f4f4f4; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); cursor: pointer; }
+        .card h3 { margin: 0 0 10px; }
+        .online { color: green; }
+        .busy { color: orange; }
+        .offline { color: red; }
+        .detail-panel { display: none; position: fixed; top: 0; left: 0; width: 300px; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.5); padding: 20px; z-index: 10; }
+    </style>
+</head>
+<body>
+    <h1>🏢 Command Center</h1>
+    <div class="grid" id="agentGrid"></div>
+    <div class="detail-panel" id="detailPanel">
+        <button onclick="closeDetailPanel()">Close</button>
+        <div id="agentDetails"></div>
+        <button onclick="openTaskModal()">Send Task</button>
+    </div>
+
+    <h2>Executive Decisions</h2>
+    <ul id="decisionsList"></ul>
+
+    <script>
+        const agents = [
+            { name: 'Agent One', role: 'Developer', status: 'online', model: 'GPT-4', lastActive: '2026-02-24 17:00' },
+            { name: 'Agent Two', role: 'Designer', status: 'busy', model: 'DALL-E', lastActive: '2026-02-24 16:30' },
+            { name: 'Agent Three', role: 'Manager', status: 'offline', model: 'Claude', lastActive: '2026-02-24 15:00' }
+        ];
+
+        const decisions = [
+            { date: '2026-02-24', question: 'Should we proceed?', summary: 'Yes, proceed with development.', consulted: 'Agent One, Agent Two' },
+            { date: '2026-02-23', question: 'What design should we use?', summary: 'Use the modern theme.', consulted: 'Agent Two' }
+        ];
+
+        function renderAgents() {
+            const grid = document.getElementById('agentGrid');
+            agents.forEach(agent => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `<h3>${agent.name} <span class="${agent.status}">&#•;</span></h3><p>${agent.role}</p><p>Model: ${agent.model}</p><p>Last Active: ${agent.lastActive}</p>`;
+                card.onclick = () => openDetailPanel(agent);
+                grid.appendChild(card);
+            });
+        }
+
+        function openDetailPanel(agent) {
+            const detailPanel = document.getElementById('detailPanel');
+            const agentDetails = document.getElementById('agentDetails');
+            agentDetails.innerHTML = `<h3>${agent.name}</h3><p>Role: ${agent.role}</p><p>Status: ${agent.status}</p><p>Model: ${agent.model}</p><p>Last Active: ${agent.lastActive}</p>`;
+            detailPanel.style.display = 'block';
+        }
+
+        function closeDetailPanel() {
+            document.getElementById('detailPanel').style.display = 'none';
+        }
+
+        function openTaskModal() {
+            const task = prompt('Enter your task:');
+            if (task) {
+                alert(`Task sent: ${task}`);
+                // Simulate logging the task in activity log
+                console.log('Task logged for agent:', task);
+            }
+        }
+
+        function renderDecisions() {
+            const list = document.getElementById('decisionsList');
+            decisions.forEach(decision => {
+                const item = document.createElement('li');
+                item.innerHTML = `<strong>${decision.date}</strong>: ${decision.question} - ${decision.summary} (Consulted: ${decision.consulted})`;
+                list.appendChild(item);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAgents();
+            renderDecisions();
+        });
+    </script>
+</body>
+</html>

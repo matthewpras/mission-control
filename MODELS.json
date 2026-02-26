@@ -1,0 +1,6 @@
+{
+  "Primary Model": "gemini-2.5-flash",
+  "Pro Model": "gemini-2.5-pro",
+  "Regional Config": "us-central1",
+  "API Endpoint": "v1"
+}
