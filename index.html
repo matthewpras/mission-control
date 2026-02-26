@@ -995,7 +995,10 @@
             </div>
 
             <div class="card" style="margin-bottom: 2.5rem;">
-                <div class="section-title">Board Meetings</div>
+                <div class="section-title">
+                    Board Meetings
+                    <button class="btn btn-primary" style="font-size: 0.75rem; padding: 4px 12px;" onclick="openMeetingOverview()">📊 Overview</button>
+                </div>
                 <div class="activity-feed" id="meeting-list">
                     <!-- Meetings populated by JS -->
                 </div>
@@ -1017,6 +1020,19 @@
             <!-- Content populated by JS -->
         </div>
         <button class="btn btn-primary" style="width: 100%; margin-top: 2rem;" onclick="openAgentTaskModal()">Send Task</button>
+    </div>
+
+    <!-- --- MEETING OVERVIEW MODAL --- -->
+    <div class="modal-overlay" id="meeting-overview-modal">
+        <div class="modal" style="width: 600px; max-width: 90%; max-height: 80vh; overflow-y: auto;">
+            <h2 class="modal-title">Board Meeting Overview</h2>
+            <div id="meeting-overview-content" class="activity-feed">
+                <!-- Overview points populated by JS -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="closeModal('meeting-overview-modal')">Close</button>
+            </div>
+        </div>
     </div>
 
     <!-- --- TASK MODAL --- -->
@@ -1414,6 +1430,24 @@
         function closeAgentPanel() {
             document.getElementById('agent-detail-panel').classList.remove('open');
             activeAgentId = null;
+        }
+
+        function openMeetingOverview() {
+            const modal = document.getElementById('meeting-overview-modal');
+            const content = document.getElementById('meeting-overview-content');
+
+            content.innerHTML = meetings.map(m => `
+                <div class="activity-item" style="border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem; margin-bottom: 1rem;">
+                    <div class="activity-info">
+                        <h4 style="color: var(--accent-purple); font-size: 1rem;">${m.topic}</h4>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">${m.date} • Participated: ${Array.isArray(m.agents) ? m.agents.join(', ') : m.agents}</div>
+                        <p style="font-size: 0.9rem; color: var(--text-primary); margin-bottom: 0.5rem;"><strong>Summary:</strong> ${m.summary}</p>
+                        <p style="font-size: 0.9rem; color: var(--success);"><strong>Outcome:</strong> ${m.outcome}</p>
+                    </div>
+                </div>
+            `).join('') || '<p class="text-muted">No meetings logged yet.</p>';
+
+            modal.classList.add('open');
         }
 
         function openAgentTaskModal() {
