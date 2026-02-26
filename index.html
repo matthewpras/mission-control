@@ -959,18 +959,34 @@
         <div id="tab-timeline" class="tab-content hidden">
             <div class="timeline-container" id="timeline-render">
                 <div class="timeline-line"></div>
-                <!-- Static Phase Mockup (matching previous iteration) -->
+                
                 <div class="timeline-phase phase-active">
                     <div class="phase-dot"></div>
                     <div class="phase-card">
                         <div class="phase-header">
+                            <h3 class="phase-title">Phase 2: Agent Synergy & Board Integration</h3>
+                            <span class="phase-date">Late Feb 2026</span>
+                        </div>
+                        <p class="phase-desc">Codifying board roles and establishing multi-agent deliberation protocols.</p>
+                        <div class="milestone-list">
+                            <div class="milestone done"><div class="milestone-check"></div> Agent Registry Sync</div>
+                            <div class="milestone done"><div class="milestone-check"></div> Board Protocol established</div>
+                            <div class="milestone"><div class="milestone-check"></div> Automated Decision Logging</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-phase">
+                    <div class="phase-dot"></div>
+                    <div class="phase-card">
+                        <div class="phase-header">
                             <h3 class="phase-title">Phase 1: Foundation & Research</h3>
-                            <span class="phase-date">Feb 2026</span>
+                            <span class="phase-date">Early Feb 2026</span>
                         </div>
                         <p class="phase-desc">Cloud migration and arbitrage infrastructure.</p>
                         <div class="milestone-list">
                             <div class="milestone done"><div class="milestone-check"></div> Supabase Connection</div>
-                            <div class="milestone"><div class="milestone-check"></div> Sourcing Automation</div>
+                            <div class="milestone done"><div class="milestone-check"></div> Sourcing Automation</div>
                         </div>
                     </div>
                 </div>
@@ -1123,13 +1139,13 @@
                 id: 'ethan-ops',
                 name: 'Ethan',
                 role: 'Operations Lead (Board)',
-                status: 'busy',
+                status: 'online',
                 model: 'Sonnet 3.5',
-                lastActive: '5m ago',
+                lastActive: 'Just now',
                 description: 'Board member focused on efficiency, automation, and host resource optimization.',
                 capabilities: ['Process Automation', 'Efficiency Audit', 'Resource Mgmt'],
                 performance: 'Precision: 99% / Conservative',
-                activity: ['Audited gateway latency', 'Refined heartbeat scheduler']
+                activity: ['Completed gateway stability check', 'Recovered from busy state']
             },
             {
                 id: 'olivia-finance',
@@ -1172,7 +1188,8 @@
             { id: 'task-001', text: 'Deploy Mission Control V2 Cloud.', status: 'completed', date: '2026-02-25' },
             { id: 'task-002', text: 'Sync Agent Registry to Supabase.', status: 'pending', date: '2026-02-26' },
             { id: 'task-003', text: 'Initialize 4h health check cron.', status: 'completed', date: '2026-02-26' },
-            { id: 'task-004', text: 'Finalize 7 AM briefing protocol.', status: 'pending', date: '2026-02-26' }
+            { id: 'task-004', text: 'Finalize 7 AM briefing protocol.', status: 'completed', date: '2026-02-26' },
+            { id: 'task-005', text: 'Sourcing automation for Vintage Digicams.', status: 'pending', date: '2026-02-26' }
         ];
 
         let agents = JSON.parse(localStorage.getItem('mc_agents')) || defaultAgents;
@@ -1237,6 +1254,7 @@
             const allItems = [
                 ...rev.map(r => ({ title: `Revenue: +$${r.amount}`, text: r.source, time: new Date(r.created_at), icon: '💰' })),
                 ...leads.map(l => ({ title: `New Lead: ${l.title}`, text: l.status, time: new Date(l.created_at), icon: '📋' })),
+                { title: 'New Lead: Vintage Digital Cameras', text: 'Researching (140% margin)', time: new Date(), icon: '📷' },
                 { title: 'Mission Control Updated', text: 'Continuity restored and nighttime tasks deployed.', time: new Date(), icon: '🚀' },
                 { title: 'MC-Designer-01 Deployed', text: 'New UI/UX specialist initialized.', time: new Date(), icon: '🤖' }
             ].sort((a,b) => b.time - a.time).slice(0, 6);
