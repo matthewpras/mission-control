@@ -1005,7 +1005,10 @@
                 <!-- Conductor card populated by JS -->
             </div>
 
-            <div class="section-title">The Board</div>
+            <div class="section-title">
+                The Board
+                <button class="btn btn-primary" style="font-size: 0.75rem; padding: 4px 12px;" onclick="openAgentModal()">+ Add Agent</button>
+            </div>
             <div class="metrics-grid" id="board-grid" style="margin-bottom: 2.5rem;">
                 <!-- Board member cards populated by JS -->
             </div>
@@ -1047,6 +1050,45 @@
             </div>
             <div class="modal-actions">
                 <button class="btn btn-primary" onclick="closeModal('meeting-overview-modal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- --- AGENT MODAL --- -->
+    <div class="modal-overlay" id="agent-modal-overlay">
+        <div class="modal">
+            <h2 class="modal-title">New Board Member</h2>
+            <div class="form-group">
+                <label>Agent ID (unique)</label>
+                <input type="text" class="form-control" id="new-agent-id" placeholder="e.g. nova-ops">
+            </div>
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" class="form-control" id="new-agent-name" placeholder="e.g. Nova">
+            </div>
+            <div class="form-group">
+                <label>Role</label>
+                <input type="text" class="form-control" id="new-agent-role" placeholder="e.g. Risk Analyst">
+            </div>
+            <div class="form-group">
+                <label>Initial Model</label>
+                <select class="form-control" id="new-agent-model">
+                    <option value="google/gemini-2.0-flash-001">Gemini 2.0 Flash</option>
+                    <option value="google/gemini-2.5-flash">Gemini 2.5 Flash</option>
+                    <option value="openai/gpt-4o">GPT-4o</option>
+                    <option value="openai/gpt-4o-mini">GPT-4o-mini</option>
+                    <option value="anthropic/claude-3-5-sonnet">Claude 3.5 Sonnet</option>
+                    <option value="anthropic/claude-3-5-haiku">Claude 3.5 Haiku</option>
+                    <option value="local/llama3.2:3b">Local Llama 3.2 (3B)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea class="form-control" id="new-agent-desc" style="height: 80px;" placeholder="What is this agent's purpose?"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-cancel" onclick="closeModal('agent-modal-overlay')">Cancel</button>
+                <button class="btn btn-primary" onclick="saveAgent()">Save Agent</button>
             </div>
         </div>
     </div>
@@ -1108,6 +1150,16 @@
 
         const TARGET_GOAL = 2000;
         const DEADLINE = new Date("2026-05-01");
+
+        const AVAILABLE_MODELS = [
+            { id: 'google/gemini-2.0-flash-001', name: 'Gemini 2.0 Flash' },
+            { id: 'google/gemini-2.5-flash', name: 'Gemini 2.5 Flash' },
+            { id: 'openai/gpt-4o', name: 'GPT-4o' },
+            { id: 'openai/gpt-4o-mini', name: 'GPT-4o-mini' },
+            { id: 'anthropic/claude-3-5-sonnet', name: 'Claude 3.5 Sonnet' },
+            { id: 'anthropic/claude-3-5-haiku', name: 'Claude 3.5 Haiku' },
+            { id: 'local/llama3.2:3b', name: 'Local Llama 3.2 (3B)' }
+        ];
 
         /* --- AGENT DATA --- */
         const defaultAgents = [
@@ -1218,6 +1270,7 @@
                 const { data: leads, error: leadsError } = await sb.from('leads').select('*').order('created_at', { ascending: false });
                 const { data: supabaseTasks, error: tasksError } = await sb.from('tasks').select('*').order('date', { ascending: false });
                 const { data: supabaseMeetings, error: meetingsError } = await sb.from('board_meetings').select('*').order('date', { ascending: false });
+                const { data: supabaseAgents, error: agentsError } = await sb.from('agents').select('*');
                 
                 if (!revError && !leadsError) {
                     renderDashboard(rev || [], leads || []);
@@ -1230,6 +1283,14 @@
                     }
                     if (!meetingsError && supabaseMeetings) {
                         meetings = supabaseMeetings;
+                        renderCommandCenter();
+                    }
+                    if (!agentsError && supabaseAgents && supabaseAgents.length > 0) {
+                        // Merge or replace
+                        agents = supabaseAgents.map(a => ({
+                            ...a,
+                            id: a.agent_id // map back to local id
+                        }));
                         renderCommandCenter();
                     }
                 } else {
@@ -1426,8 +1487,14 @@
 
             content.innerHTML = `
                 <h2 class="panel-title">${agent.name}</h2>
-                <p class="panel-subtitle">${agent.role} • ${agent.model}</p>
+                <p class="panel-subtitle">${agent.role}</p>
                 
+                <div class="panel-section-title">Compute Model</div>
+                <select class="form-control" onchange="updateAgentModel('${agent.id}', this.value)" style="margin-bottom: 1rem;">
+                    ${AVAILABLE_MODELS.map(m => `<option value="${m.id}" ${agent.model === m.id || agent.model.includes(m.name) ? 'selected' : ''}>${m.name}</option>`).join('')}
+                    ${!AVAILABLE_MODELS.find(m => agent.model === m.id || agent.model.includes(m.name)) ? `<option value="${agent.model}" selected>${agent.model}</option>` : ''}
+                </select>
+
                 <p class="phase-desc">${agent.description}</p>
 
                 <div class="panel-section-title">Capabilities</div>
@@ -1443,6 +1510,27 @@
             `;
 
             panel.classList.add('open');
+        }
+
+        async function updateAgentModel(agentId, newModel) {
+            const agent = agents.find(a => a.id === agentId);
+            if (!agent) return;
+
+            agent.model = newModel;
+            
+            try {
+                // Update Supabase if possible
+                const { error } = await sb.from('agents').update({ model: newModel }).match({ agent_id: agentId });
+                if (error) throw error;
+                
+                localStorage.setItem('mc_agents', JSON.stringify(agents));
+                renderCommandCenter();
+                console.log(`Agent ${agentId} model updated to ${newModel}`);
+            } catch (e) {
+                console.error("Update model failed:", e);
+                localStorage.setItem('mc_agents', JSON.stringify(agents));
+                renderCommandCenter();
+            }
         }
 
         function closeAgentPanel() {
@@ -1470,6 +1558,50 @@
 
         function openAgentTaskModal() {
             document.getElementById('agent-task-modal').classList.add('open');
+        }
+
+        function openAgentModal() {
+            document.getElementById('agent-modal-overlay').classList.add('open');
+        }
+
+        async function saveAgent() {
+            const id = document.getElementById('new-agent-id').value;
+            const name = document.getElementById('new-agent-name').value;
+            const role = document.getElementById('new-agent-role').value;
+            const model = document.getElementById('new-agent-model').value;
+            const desc = document.getElementById('new-agent-desc').value;
+
+            if (!id || !name) return alert('ID and Name are required');
+
+            const newAgent = {
+                id,
+                agent_id: id, // for supabase
+                name,
+                role,
+                model,
+                description: desc,
+                status: 'offline',
+                lastActive: 'Never',
+                capabilities: ['Initializing...'],
+                performance: 'N/A',
+                activity: ['Agent created']
+            };
+
+            agents.push(newAgent);
+            localStorage.setItem('mc_agents', JSON.stringify(agents));
+
+            try {
+                const { error } = await sb.from('agents').insert([newAgent]);
+                if (error) console.warn("Supabase agent save error:", error);
+            } catch (e) {
+                console.error("Supabase agent save failed:", e);
+            }
+
+            renderCommandCenter();
+            closeModal('agent-modal-overlay');
+            
+            // Reset form
+            ['new-agent-id', 'new-agent-name', 'new-agent-role', 'new-agent-desc'].forEach(f => document.getElementById(f).value = '');
         }
 
         function submitAgentTask() {
