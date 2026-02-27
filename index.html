@@ -910,7 +910,7 @@
                     <div class="priority-list">
                         <button class="add-btn" onclick="openTaskModal('New')">+ Add New Lead</button>
                         <button class="add-btn" style="border-color: #3b82f6; color: #3b82f6; background: rgba(59, 130, 246, 0.1);" onclick="addRevPrompt()">+ Log Revenue</button>
-                        <button class="add-btn" style="border-color: #10b981; color: #10b981; background: rgba(16, 185, 129, 0.1);" onclick="openScheduleMeetingModal()">📅 Schedule Meeting</button>
+
                     </div>
                 </div>
             </div>
@@ -1097,38 +1097,6 @@
             </div>
             <div class="modal-actions">
                 <button class="btn btn-primary" onclick="closeModal('meeting-overview-modal')">Close</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- --- SCHEDULE MEETING MODAL --- -->
-    <div class="modal-overlay" id="schedule-meeting-modal">
-        <div class="modal">
-            <h2 class="modal-title">📅 Schedule Meeting</h2>
-            <div class="form-group">
-                <label>Title</label>
-                <input type="text" class="form-control" id="mtg-title" placeholder="e.g. Q1 Revenue Review">
-            </div>
-            <div class="form-group">
-                <label>Date & Time</label>
-                <input type="datetime-local" class="form-control" id="mtg-datetime">
-            </div>
-            <div class="form-group">
-                <label>Duration</label>
-                <select class="form-control" id="mtg-duration">
-                    <option value="30">30 minutes</option>
-                    <option value="60" selected>1 hour</option>
-                    <option value="90">1.5 hours</option>
-                    <option value="120">2 hours</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Description (optional)</label>
-                <textarea class="form-control" id="mtg-desc" style="height: 70px; resize: none;" placeholder="Agenda, notes, participants..."></textarea>
-            </div>
-            <div class="modal-actions">
-                <button class="btn btn-cancel" onclick="closeModal('schedule-meeting-modal')">Cancel</button>
-                <button class="btn btn-primary" id="submit-mtg-btn" onclick="submitScheduleMeeting()">Schedule</button>
             </div>
         </div>
     </div>
