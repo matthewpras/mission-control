@@ -67,7 +67,17 @@ def daily_checks():
             if error_count > 10:
                 alerts.append(f"High number of errors detected in logs: {error_count} in last 500 lines.")
 
-    # 4. Git backup
+    # 4. Git backup — clear stale lock files first to avoid race conditions
+    for lock_file in [
+        os.path.join(WORKSPACE_ROOT, ".git", "index.lock"),
+        os.path.join(WORKSPACE_ROOT, ".git", "refs", "remotes", "origin", "main.lock")
+    ]:
+        try:
+            if os.path.exists(lock_file):
+                os.remove(lock_file)
+        except Exception:
+            pass  # If we can't remove it, git will handle the error
+
     run_command("git add .")
     out, err = run_command(f'git commit -m "Automated Health Backup: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}"')
     # We don't alert on commit success/fail unless it's a real error
