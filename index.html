@@ -1023,22 +1023,37 @@
 
         <!-- --- COMMAND CENTER TAB --- -->
         <div id="tab-command-center" class="tab-content hidden">
-            <div class="section-title">Leadership</div>
-            <div id="leadership-grid" style="margin-bottom: 2rem; display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+
+            <!-- Chief of Staff -->
+            <div class="section-title" style="margin-top: 0;">⚡ Chief of Staff</div>
+            <div id="leadership-grid" style="margin-bottom: 2.5rem; display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
                 <!-- Conductor card populated by JS -->
             </div>
 
-            <div class="section-title">
-                The Board
+            <!-- Board of Directors -->
+            <div class="section-title" style="border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
+                🏛️ Board of Directors
                 <button class="btn btn-primary" style="font-size: 0.75rem; padding: 4px 12px;" onclick="openAgentModal()">+ Add Agent</button>
             </div>
+            <p style="color: var(--text-muted); font-size: 0.82rem; margin: -1rem 0 1.5rem;">Responsible for major strategic decisions across all operations.</p>
             <div class="metrics-grid" id="board-grid" style="margin-bottom: 2.5rem;">
-                <!-- Board member cards populated by JS -->
+                <!-- Board members populated by JS -->
             </div>
 
-            <div class="section-title">
-                Financial Audit Team
+            <!-- Workers -->
+            <div class="section-title" style="border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
+                🛠️ Operations Team
             </div>
+            <p style="color: var(--text-muted); font-size: 0.82rem; margin: -1rem 0 1.5rem;">Execution-layer agents — UI, research, and automation.</p>
+            <div class="metrics-grid" id="workers-grid" style="margin-bottom: 2.5rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+                <!-- Worker agents populated by JS -->
+            </div>
+
+            <!-- Financial Audit Team -->
+            <div class="section-title" style="border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
+                🔎 Financial Audit Team
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.82rem; margin: -1rem 0 1.5rem;">Independent oversight — financial integrity and risk review.</p>
             <div class="metrics-grid" id="audit-grid" style="margin-bottom: 2.5rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
                 <!-- Audit agents populated by JS -->
             </div>
@@ -1469,54 +1484,39 @@
         }
 
         /* --- COMMAND CENTER --- */
+        // Agent classification
+        const BOARD_IDS = ['sophia-growth','ethan-ops','olivia-finance','liam-tech','finn-quant','silas-arbiter','vera-contrarian'];
+        const AUDIT_IDS = ['audit-lead','audit-ops'];
+        const WORKER_IDS = ['mc-designer-01'];
+
+        function agentCard(agent, accentColor) {
+            return `
+                <div class="card" style="cursor: pointer; ${agent.id === 'kris-sentinel' ? 'border-color: var(--accent-purple); background: rgba(139, 92, 246, 0.05);' : ''}" onclick="openAgentPanel('${agent.id}')">
+                    <div class="card-accent" style="background: ${accentColor}"></div>
+                    <div class="metric-label">
+                        <div class="status-dot ${agent.status || 'online'}"></div>
+                        ${agent.role}
+                    </div>
+                    <div class="metric-value">${agent.name}</div>
+                    <div class="trend" style="color: var(--text-muted)">${agent.model} • ${agent.lastActive || 'Active'}</div>
+                </div>`;
+        }
+
         function renderCommandCenter() {
             const leadershipGrid = document.getElementById('leadership-grid');
             const boardGrid = document.getElementById('board-grid');
+            const workersGrid = document.getElementById('workers-grid');
             const auditGrid = document.getElementById('audit-grid');
 
-            const leaderHtml = agents.filter(a => a.id === 'kris-sentinel').map(agent => `
-                <div class="card" style="cursor: pointer; border-color: var(--accent-purple); background: rgba(139, 92, 246, 0.05);" onclick="openAgentPanel('${agent.id}')">
-                    <div class="card-accent" style="background: var(--accent-purple)"></div>
-                    <div class="metric-label">
-                        <div class="status-dot ${agent.status}"></div>
-                        ${agent.role}
-                    </div>
-                    <div class="metric-value">${agent.name}</div>
-                    <div class="trend" style="color: var(--text-muted)">${agent.model} • ${agent.lastActive}</div>
-                </div>
-            `).join('');
+            const chief = agents.filter(a => a.id === 'kris-sentinel');
+            const board = agents.filter(a => BOARD_IDS.includes(a.id));
+            const workers = agents.filter(a => WORKER_IDS.includes(a.id) || (!BOARD_IDS.includes(a.id) && !AUDIT_IDS.includes(a.id) && a.id !== 'kris-sentinel'));
+            const audit = agents.filter(a => AUDIT_IDS.includes(a.id) || (a.role || '').toLowerCase().includes('audit'));
 
-            const auditAgents = agents.filter(a => (a.role || '').toLowerCase().includes('audit'));
-            const auditIds = new Set(auditAgents.map(a => a.id));
-            const boardAgents = agents.filter(a => a.id !== 'kris-sentinel' && !auditIds.has(a.id));
-
-            const boardHtml = boardAgents.map(agent => `
-                <div class="card" style="cursor: pointer" onclick="openAgentPanel('${agent.id}')">
-                    <div class="card-accent" style="background: ${agent.status === 'online' ? 'var(--success)' : (agent.status === 'busy' ? 'var(--warning)' : 'var(--text-muted)')}"></div>
-                    <div class="metric-label">
-                        <div class="status-dot ${agent.status}"></div>
-                        ${agent.role}
-                    </div>
-                    <div class="metric-value">${agent.name}</div>
-                    <div class="trend" style="color: var(--text-muted)">${agent.model} • ${agent.lastActive}</div>
-                </div>
-            `).join('');
-
-            const auditHtml = auditAgents.length ? auditAgents.map(agent => `
-                <div class="card" style="cursor: pointer" onclick="openAgentPanel('${agent.id}')">
-                    <div class="card-accent" style="background: var(--warning);"></div>
-                    <div class="metric-label">
-                        <div class="status-dot ${agent.status}"></div>
-                        ${agent.role}
-                    </div>
-                    <div class="metric-value">${agent.name}</div>
-                    <div class="trend" style="color: var(--text-muted)">${agent.model} • ${agent.lastActive}</div>
-                </div>
-            `).join('') : `<div class="card" style="opacity: 0.7; border-style: dashed; text-align: center;">No audit agents online.</div>`;
-
-            leadershipGrid.innerHTML = leaderHtml;
-            boardGrid.innerHTML = boardHtml;
-            if (auditGrid) auditGrid.innerHTML = auditHtml;
+            leadershipGrid.innerHTML = chief.map(a => agentCard(a, 'var(--accent-purple)')).join('') || '<p style="color:var(--text-muted)">No chief of staff found.</p>';
+            boardGrid.innerHTML = board.map(a => agentCard(a, 'var(--success)')).join('') || '<p style="color:var(--text-muted)">No board members found.</p>';
+            workersGrid.innerHTML = workers.map(a => agentCard(a, '#3b82f6')).join('') || '<div class="card" style="opacity:0.6;border-style:dashed;text-align:center;">No workers assigned.</div>';
+            auditGrid.innerHTML = audit.map(a => agentCard(a, 'var(--warning)')).join('') || '<div class="card" style="opacity:0.6;border-style:dashed;text-align:center;">No audit agents online.</div>';
 
             const meetingList = document.getElementById('meeting-list');
             meetingList.innerHTML = meetings.map(m => `
