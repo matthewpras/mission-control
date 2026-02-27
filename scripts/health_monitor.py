@@ -118,9 +118,12 @@ def main():
     now = time.time()
     all_alerts = []
     
+    # Always run daily for testing/heartbeat if no state exists or just run it
+    all_alerts.extend(daily_checks())
+    
     # Daily
     if now - state["last_daily"] > 24 * 3600:
-        all_alerts.extend(daily_checks())
+        # all_alerts.extend(daily_checks()) # redundant with above for heartbeat visibility
         state["last_daily"] = now
         
     # Weekly
