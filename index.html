@@ -910,6 +910,7 @@
                     <div class="priority-list">
                         <button class="add-btn" onclick="openTaskModal('New')">+ Add New Lead</button>
                         <button class="add-btn" style="border-color: #3b82f6; color: #3b82f6; background: rgba(59, 130, 246, 0.1);" onclick="addRevPrompt()">+ Log Revenue</button>
+                        <button class="add-btn" style="border-color: #10b981; color: #10b981; background: rgba(16, 185, 129, 0.1);" onclick="openScheduleMeetingModal()">📅 Schedule Meeting</button>
                     </div>
                 </div>
             </div>
@@ -1035,6 +1036,30 @@
                 <!-- Board member cards populated by JS -->
             </div>
 
+            <div class="section-title">
+                Financial Audit Team
+            </div>
+            <div class="metrics-grid" id="audit-grid" style="margin-bottom: 2.5rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+                <!-- Audit agents populated by JS -->
+            </div>
+
+            <div class="card" style="margin-bottom: 2.5rem;">
+                <div class="section-title">
+                    Schedule Board Meeting
+                </div>
+                <div class="form-group">
+                    <label>Meeting Topic / Strategic Question</label>
+                    <textarea class="form-control" id="board-meeting-topic" style="height: 80px; resize: none;" placeholder="e.g. Scaling Vintage Digicam operations to $500/week..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Date & Time</label>
+                    <input type="datetime-local" class="form-control" id="board-meeting-time">
+                </div>
+                <div class="modal-actions" style="margin-top: 0;">
+                    <button class="btn btn-primary" id="schedule-meeting-btn" onclick="scheduleBoardMeeting()">Schedule Meeting</button>
+                </div>
+            </div>
+
             <div class="card" style="margin-bottom: 2.5rem;">
                 <div class="section-title">
                     Board Meetings
@@ -1076,6 +1101,38 @@
         </div>
     </div>
 
+    <!-- --- SCHEDULE MEETING MODAL --- -->
+    <div class="modal-overlay" id="schedule-meeting-modal">
+        <div class="modal">
+            <h2 class="modal-title">📅 Schedule Meeting</h2>
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" class="form-control" id="mtg-title" placeholder="e.g. Q1 Revenue Review">
+            </div>
+            <div class="form-group">
+                <label>Date & Time</label>
+                <input type="datetime-local" class="form-control" id="mtg-datetime">
+            </div>
+            <div class="form-group">
+                <label>Duration</label>
+                <select class="form-control" id="mtg-duration">
+                    <option value="30">30 minutes</option>
+                    <option value="60" selected>1 hour</option>
+                    <option value="90">1.5 hours</option>
+                    <option value="120">2 hours</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Description (optional)</label>
+                <textarea class="form-control" id="mtg-desc" style="height: 70px; resize: none;" placeholder="Agenda, notes, participants..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-cancel" onclick="closeModal('schedule-meeting-modal')">Cancel</button>
+                <button class="btn btn-primary" id="submit-mtg-btn" onclick="submitScheduleMeeting()">Schedule</button>
+            </div>
+        </div>
+    </div>
+
     <!-- --- AGENT MODAL --- -->
     <div class="modal-overlay" id="agent-modal-overlay">
         <div class="modal">
@@ -1101,7 +1158,6 @@
                     <option value="openai/gpt-4o-mini">GPT-4o-mini</option>
                     <option value="anthropic/claude-3-5-sonnet">Claude 3.5 Sonnet</option>
                     <option value="anthropic/claude-3-5-haiku">Claude 3.5 Haiku</option>
-                    <option value="local/llama3.2:3b">Local Llama 3.2 (3B)</option>
                 </select>
             </div>
             <div class="form-group">
@@ -1179,8 +1235,7 @@
             { id: 'openai/gpt-4o', name: 'GPT-4o' },
             { id: 'openai/gpt-4o-mini', name: 'GPT-4o-mini' },
             { id: 'anthropic/claude-3-5-sonnet', name: 'Claude 3.5 Sonnet' },
-            { id: 'anthropic/claude-3-5-haiku', name: 'Claude 3.5 Haiku' },
-            { id: 'local/llama3.2:3b', name: 'Local Llama 3.2 (3B)' }
+            { id: 'anthropic/claude-3-5-haiku', name: 'Claude 3.5 Haiku' }
         ];
 
         /* --- AGENT DATA --- */
@@ -1449,6 +1504,7 @@
         function renderCommandCenter() {
             const leadershipGrid = document.getElementById('leadership-grid');
             const boardGrid = document.getElementById('board-grid');
+            const auditGrid = document.getElementById('audit-grid');
 
             const leaderHtml = agents.filter(a => a.id === 'kris-sentinel').map(agent => `
                 <div class="card" style="cursor: pointer; border-color: var(--accent-purple); background: rgba(139, 92, 246, 0.05);" onclick="openAgentPanel('${agent.id}')">
@@ -1462,7 +1518,11 @@
                 </div>
             `).join('');
 
-            const boardHtml = agents.filter(a => a.id !== 'kris-sentinel').map(agent => `
+            const auditAgents = agents.filter(a => (a.role || '').toLowerCase().includes('audit'));
+            const auditIds = new Set(auditAgents.map(a => a.id));
+            const boardAgents = agents.filter(a => a.id !== 'kris-sentinel' && !auditIds.has(a.id));
+
+            const boardHtml = boardAgents.map(agent => `
                 <div class="card" style="cursor: pointer" onclick="openAgentPanel('${agent.id}')">
                     <div class="card-accent" style="background: ${agent.status === 'online' ? 'var(--success)' : (agent.status === 'busy' ? 'var(--warning)' : 'var(--text-muted)')}"></div>
                     <div class="metric-label">
@@ -1474,8 +1534,21 @@
                 </div>
             `).join('');
 
+            const auditHtml = auditAgents.length ? auditAgents.map(agent => `
+                <div class="card" style="cursor: pointer" onclick="openAgentPanel('${agent.id}')">
+                    <div class="card-accent" style="background: var(--warning);"></div>
+                    <div class="metric-label">
+                        <div class="status-dot ${agent.status}"></div>
+                        ${agent.role}
+                    </div>
+                    <div class="metric-value">${agent.name}</div>
+                    <div class="trend" style="color: var(--text-muted)">${agent.model} • ${agent.lastActive}</div>
+                </div>
+            `).join('') : `<div class="card" style="opacity: 0.7; border-style: dashed; text-align: center;">No audit agents online.</div>`;
+
             leadershipGrid.innerHTML = leaderHtml;
             boardGrid.innerHTML = boardHtml;
+            if (auditGrid) auditGrid.innerHTML = auditHtml;
 
             const meetingList = document.getElementById('meeting-list');
             meetingList.innerHTML = meetings.map(m => `
@@ -1690,6 +1763,58 @@
             }]);
         }
 
+        async function scheduleBoardMeeting() {
+            const topicEl = document.getElementById('board-meeting-topic');
+            const timeEl = document.getElementById('board-meeting-time');
+            const topic = topicEl.value.trim();
+            const scheduledTime = timeEl.value ? new Date(timeEl.value).toISOString() : new Date().toISOString();
+            
+            const btn = document.getElementById('schedule-meeting-btn');
+
+            if (!topic) return alert('Please enter a topic for the board meeting.');
+
+            btn.disabled = true;
+            btn.innerText = 'Scheduling...';
+
+            try {
+                // We create a task for the primary agent to conduct this meeting
+                const taskDescription = `CONDUCT BOARD MEETING: ${topic}. 
+                Follow SCHEDULING_BOARD_MEETINGS.md. 
+                Invoke Sophia, Ethan, Olivia, and Liam. 
+                Output the synthesized transcript and directive to the Meta-Analysis Telegram channel (ID: -1003882600560, thread: 13).
+                Record the outcome in the board_meetings Supabase table.`;
+
+                // Log the meeting as "Scheduled" in Supabase
+                const { data, error } = await sb.from('tasks').insert([{
+                    text: `Board Meeting: ${topic}`,
+                    status: 'pending',
+                    date: scheduledTime.split('T')[0] // Just the date for tasks list
+                }]).select();
+
+                if (error) throw error;
+
+                // For the agent to pick it up, we can also add it to a dedicated meeting log
+                await sb.from('board_meetings').insert([{
+                    topic: topic,
+                    summary: 'Meeting scheduled via Mission Control. Awaiting execution...',
+                    outcome: 'Pending',
+                    date: scheduledTime, // Full ISO string for precise scheduling
+                    agents: 'Kris, Sophia, Ethan, Olivia, Liam'
+                }]);
+
+                alert('Meeting scheduled! It will appear on your Google Calendar shortly.');
+                topicEl.value = '';
+                timeEl.value = ''; // Reset time picker
+                await fetchData();
+            } catch (e) {
+                console.error("Schedule meeting failed:", e);
+                alert('Failed to schedule meeting: ' + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Schedule Meeting';
+            }
+        }
+
         /* --- UI HELPERS --- */
         function updateClock() {
             const now = new Date();
@@ -1717,6 +1842,59 @@
                 document.getElementById(`tab-${link.dataset.tab}`).classList.remove('hidden');
             });
         });
+
+        /* --- SCHEDULE MEETING --- */
+        function openScheduleMeetingModal() {
+            // Set default date/time to 1 hour from now
+            const now = new Date();
+            now.setHours(now.getHours() + 1, 0, 0, 0);
+            const pad = n => String(n).padStart(2, '0');
+            const localDT = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+            document.getElementById('mtg-datetime').value = localDT;
+            document.getElementById('schedule-meeting-modal').classList.add('open');
+        }
+
+        async function submitScheduleMeeting() {
+            const title = document.getElementById('mtg-title').value.trim();
+            const datetime = document.getElementById('mtg-datetime').value;
+            const duration = document.getElementById('mtg-duration').value;
+            const desc = document.getElementById('mtg-desc').value.trim();
+            const btn = document.getElementById('submit-mtg-btn');
+
+            if (!title || !datetime) return alert('Title and date/time are required.');
+
+            btn.disabled = true;
+            btn.innerText = 'Scheduling...';
+
+            try {
+                const start = new Date(datetime).toISOString();
+                const end = new Date(new Date(datetime).getTime() + parseInt(duration) * 60000).toISOString();
+
+                // Log to Supabase board_meetings table
+                const { error } = await sb.from('board_meetings').insert([{
+                    topic: title,
+                    summary: desc || 'Scheduled via Mission Control.',
+                    outcome: 'Scheduled',
+                    date: datetime.split('T')[0],
+                    agents: 'TBD',
+                    start_time: start,
+                    end_time: end
+                }]);
+
+                if (error) throw error;
+
+                alert(`✅ "${title}" scheduled for ${new Date(datetime).toLocaleString()}.\n\nNote: Google Calendar sync requires gog auth. Run: gog auth list`);
+                closeModal('schedule-meeting-modal');
+                document.getElementById('mtg-title').value = '';
+                document.getElementById('mtg-desc').value = '';
+                await fetchData();
+            } catch(e) {
+                alert('Failed to schedule: ' + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Schedule';
+            }
+        }
 
         init();
     </script>
