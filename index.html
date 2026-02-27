@@ -763,23 +763,44 @@
                 flex-direction: column;
                 align-items: flex-start;
                 padding-top: 1rem;
-                padding-bottom: 0.5rem;
+                padding-bottom: 0.2rem;
             }
-            .logo { margin-bottom: 1rem; }
+            .logo { 
+                margin-bottom: 0.75rem; 
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
             .search-bar { display: none; }
+            .header-right {
+                position: absolute;
+                top: 1.25rem;
+                right: 1rem;
+            }
             nav { 
                 display: flex; 
                 overflow-x: auto; 
                 width: 100%;
-                padding-bottom: 0.5rem;
+                padding-bottom: 0.8rem;
+                margin-top: 0.2rem;
                 -webkit-overflow-scrolling: touch;
                 scrollbar-width: none;
+                mask-image: linear-gradient(to right, black 85%, transparent 100%);
+                -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
             }
             nav::-webkit-scrollbar { display: none; }
-            .nav-link { flex-shrink: 0; white-space: nowrap; }
+            .nav-link { 
+                flex-shrink: 0; 
+                white-space: nowrap;
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
             .metrics-grid { grid-template-columns: 1fr; }
             .kanban-board { grid-template-columns: 1fr; }
             .milestone-list { grid-template-columns: 1fr; }
+            .container { padding: 1.25rem; }
+            .welcome-bar h1 { font-size: 1.75rem; }
         }
     </style>
 </head>
@@ -826,8 +847,9 @@
                 </div>
                 <div id="dashboard-tasks-list" class="priority-list">
                     <!-- Loaded Active Tasks -->
-                    <div class="priority-item">Operation Blank Slate: Pitching 4 streams to the Board - Pending</div>
-                    <div class="priority-item">Fix Mobile UI navigation visibility for iPhone - Pending</div>
+                    <div class="priority-item">Sync Agent Registry to Supabase - Pending</div>
+                    <div class="priority-item">Research high-ROI arbitrage leads for 'Vintage Digicam' trend - Pending</div>
+                    <div class="priority-item">Monitor Depop dropshipping margins and inventory - Pending</div>
                 </div>
             </div>
 
@@ -1237,11 +1259,13 @@
         ];
 
         const defaultTasks = [
-            { id: 'task-001', text: 'Deploy Mission Control V2 Cloud.', status: 'completed', date: '2026-02-25' },
-            { id: 'task-002', text: 'Sync Agent Registry to Supabase.', status: 'pending', date: '2026-02-26' },
-            { id: 'task-003', text: 'Initialize 4h health check cron.', status: 'completed', date: '2026-02-26' },
-            { id: 'task-004', text: 'Finalize 7 AM briefing protocol.', status: 'completed', date: '2026-02-26' },
-            { id: 'task-005', text: 'Sourcing automation for Vintage Digicams.', status: 'pending', date: '2026-02-26' }
+            { id: 'task-001', text: 'Board Audit: Spring 2026 Fashion Items (Nova/Finn)', status: 'completed', date: '2026-02-26' },
+            { id: 'task-002', text: 'Mobile UI Fixes: Command Center (Horizontal Scroll & Visibility)', status: 'completed', date: '2026-02-26' },
+            { id: 'task-003', text: 'Supplier Deep-Dive: AliExpress Reliability Audit', status: 'completed', date: '2026-02-26' },
+            { id: 'task-004', text: 'Sync Agent Registry to Supabase', status: 'pending', date: '2026-02-26' },
+            { id: 'task-005', text: 'Research high-ROI arbitrage leads for \'Vintage Digicam\' trend', status: 'pending', date: '2026-02-26' },
+            { id: 'task-006', text: 'Monitor Depop dropshipping margins and inventory', status: 'pending', date: '2026-02-26' },
+            { id: 'task-007', text: 'Achieve $100 profit by March 5th', status: 'pending', date: '2026-02-26' }
         ];
 
         let agents = JSON.parse(localStorage.getItem('mc_agents')) || defaultAgents;

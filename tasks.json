@@ -1,0 +1,44 @@
+[
+  {
+    "id": "task-001",
+    "text": "Board Audit: Spring 2026 Fashion Items (Nova/Finn)",
+    "status": "completed",
+    "date": "2026-02-26"
+  },
+  {
+    "id": "task-002",
+    "text": "Mobile UI Fixes: Command Center (Horizontal Scroll & Visibility)",
+    "status": "completed",
+    "date": "2026-02-26"
+  },
+  {
+    "id": "task-003",
+    "text": "Supplier Deep-Dive: AliExpress Reliability Audit",
+    "status": "completed",
+    "date": "2026-02-26"
+  },
+  {
+    "id": "task-004",
+    "text": "Sync Agent Registry to Supabase",
+    "status": "pending",
+    "date": "2026-02-26"
+  },
+  {
+    "id": "task-005",
+    "text": "Research high-ROI arbitrage leads for 'Vintage Digicam' trend",
+    "status": "pending",
+    "date": "2026-02-26"
+  },
+  {
+    "id": "task-006",
+    "text": "Monitor Depop dropshipping margins and inventory",
+    "status": "pending",
+    "date": "2026-02-26"
+  },
+  {
+    "id": "task-007",
+    "text": "Achieve $100 profit by March 5th",
+    "status": "pending",
+    "date": "2026-02-26"
+  }
+]

@@ -41,6 +41,7 @@ Things like:
   - 🏠 **Real Estate**: threadId `20`
   - 🛠️ **Mission Control**: threadId `21`
   - 📂 **File Vault**: threadId `22`
+  - 📈 **Kalshi Trades**: threadId `167`
 - **Note**: Always use numeric IDs for targeting; display names are not supported.
 
 ### Cameras

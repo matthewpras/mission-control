@@ -14,10 +14,10 @@
    • If the current session contains a "Recap" or "Status Green" message in the last two turns, immediately pivot to the next uncompleted task in the "Task Breakdown."
    • Definition of 'Read': To "read" a file means to use its data to perform a calculation or research task, not to print its contents to the chat.
 
-1. **One-Task-One-File Rule:** We will keep tasks organized by using one file per task, making interactions more efficient. Each task will be documented in its own file for clarity and ease of access.
+4. **One-Task-One-File Rule:** We will keep tasks organized by using one file per task, making interactions more efficient. Each task will be documented in its own file for clarity and ease of access.
 
-2. **Periodic Resets:** A new session should be started whenever a major milestone is achieved. This keeps the response time quick and minimizes token usage.
+5. **Periodic Resets:** A new session should be started whenever a major milestone is achieved. This keeps the response time quick and minimizes token usage.
 
-3. **MEMORY.md Anchor:** Important decisions and instructions will be recorded in **MEMORY.md** to ensure they're available even in new sessions, allowing for continuity
+6. **MEMORY.md Anchor:** Important decisions and instructions will be recorded in **MEMORY.md** to ensure they're available even in new sessions, allowing for continuity.
 
-4. **Auto-Push Workflow:** After any refinement or bug fix, I will automatically update the local file in the workspace and push updates to ensure synchronization with the Mission Control UI.
+7. **Auto-Push Workflow:** After any refinement or bug fix, I will automatically update the local file in the workspace and push updates to ensure synchronization with the Mission Control UI.
