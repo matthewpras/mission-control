@@ -31,20 +31,20 @@
   },
   {
     "id": "task-006",
-    "text": "Monitor Depop dropshipping margins and inventory",
+    "text": "Monitor Kalshi market liquidity and event probabilities",
     "status": "pending",
-    "date": "2026-02-26"
+    "date": "2026-02-27"
   },
   {
-    "id": "task-007",
-    "text": "Achieve $100 profit by March 5th",
+    "id": "task-011",
+    "text": "Develop Kalshi Trading Algorithm (Phase 1: Paper Trading)",
     "status": "pending",
-    "date": "2026-02-26"
+    "date": "2026-02-27"
   },
   {
-    "id": "task-010",
-    "text": "Support Board Meetings scheduled via Mission Control",
-    "status": "completed",
+    "id": "task-012",
+    "text": "Set up Kalshi/Polymarket cross-platform arbitrage scanner",
+    "status": "pending",
     "date": "2026-02-27"
   }
 ]

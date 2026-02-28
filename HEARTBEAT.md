@@ -4,9 +4,9 @@
 - [ ] **System Integrity:** Check `openclaw gateway status`.  
 - [ ] **Mission Control Sync:** Ensure `index.html` (V2 Cloud) is syncing revenue/tasks via Supabase. Update `tasks.json` with my current active tasks.
 - [ ] **Task Synchronization:** Sync `tasks.json` to the UI (currently via `index.html` manual update until Supabase table is live).  
-- [ ] **E-commerce Arbitrage:** Monitor Depop dropshipping margins and inventory status.  
-- [ ] **Autonomous Loop:** If Matthew is away, proceed with high-confidence arbitrage research and document findings in `memory/YYYY-MM-DD.md`.  
+- [ ] **Kalshi Trades Algorithm:** Monitor liquidity, event probability, and API health for prediction market trades.
+- [ ] **Autonomous Loop:** If Matthew is away, proceed with high-confidence Kalshi market research and document findings in `memory/YYYY-MM-DD.md`.  
 - [ ] **Proactive Pulse:** Ping Matthew on Telegram with a "System Green" status if no issues found; alert immediately on errors.  
 ## Routine Checks  
-- Every 1h: Check for new High-ROI arbitrage leads (Depop/E-commerce).
+- Every 1h: Scan Kalshi API for high-volume markets and cross-platform arbitrage (e.g., vs Polymarket).
 - Use `google/gemini-flash-latest` for routine heartbeat analysis.
