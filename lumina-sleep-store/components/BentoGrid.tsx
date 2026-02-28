@@ -40,39 +40,25 @@ const BentoGridItem = ({
   icon,
   isLarge,
 }: BentoGridItemProps) => {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start end', 'end start'],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], [-50, 50]); // Parallax effect
-
   return (
     <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.8, ease: 'anticipate' }} // Staggered fade-in with anticipate easing
+      variants={{
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 }
+      }}
       className={cn(
-        'row-span-1 relative rounded-xl group/bento hover:shadow-xl transition duration-200 shadow-input dark:shadow-none p-4 dark:bg-black dark:border-white/[0.2] bg-white border border-transparent justify-between flex flex-col space-y-4',
-        // Glassmorphism effect
-        'bg-opacity-20 backdrop-filter backdrop-blur-md border border-soft-lavender/[0.3] hover:border-digital-teal/[0.5]',
+        'row-span-1 relative rounded-2xl group/bento transition duration-300 p-6 flex flex-col justify-between space-y-4',
+        'glass glass-hover glow-effect',
         className
       )}
     >
-      {isLarge ? (
-        <motion.div style={{ y }} className="relative w-full h-full flex items-center justify-center">
-          {header}
-        </motion.div>
-      ) : (
-        header
-      )}
-      <div className="group-hover/bento:translate-x-2 transition duration-200">
-        {icon}
-        <div className="font-sans font-bold text-soft-lavender text-lg mb-2 mt-2">{title}</div>
-        <div className="font-sans font-normal text-soft-lavender/[0.7] text-sm">{description}</div>
+      {header}
+      <div className="group-hover/bento:translate-x-2 transition duration-300">
+        <div className="flex items-center gap-2 mb-2">
+          {icon}
+          <div className="font-heading font-bold text-soft-lavender text-lg uppercase tracking-wider">{title}</div>
+        </div>
+        <div className="font-sans font-normal text-soft-lavender/70 text-sm leading-relaxed">{description}</div>
       </div>
     </motion.div>
   );
