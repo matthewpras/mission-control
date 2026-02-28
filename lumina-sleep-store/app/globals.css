@@ -4,55 +4,64 @@
 
 @layer base {
   :root {
-    --color-midnight-blue: #0B0E14;
-    --color-digital-teal: #008080;
-    --color-soft-lavender: #E6E6FA;
-    --color-dark-charcoal: #1A1A1A; /* New darker charcoal for gradient */
+    --color-midnight-blue: #020617; /* Deep midnight */
+    --color-digital-teal: #2dd4bf;   /* Modern teal (emerald-400ish) */
+    --color-soft-lavender: #f1f5f9;  /* Slate-100 for better contrast */
+    --color-dark-charcoal: #0f172a;  /* Slate-900 */
   }
 
-  /* Apply deep gradient background */
+  /* Apply deep luxury gradient background */
   body {
-    background: linear-gradient(180deg, var(--color-midnight-blue) 0%, var(--color-dark-charcoal) 100%);
-    background-attachment: fixed; /* Ensures the gradient stays in place */
+    background: radial-gradient(circle at top center, #1e293b 0%, #020617 100%);
+    background-attachment: fixed;
+    color: var(--color-soft-lavender);
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
-    /* Fluid typography with clamp() */
-    font-size: clamp(2rem, 5vw, 4rem); /* Default for headers, will be overridden in specific components */
-    letter-spacing: 0.1em; /* Wide-tracked */
+    letter-spacing: 0.15em;
     text-transform: uppercase;
   }
 
   p, span, div, a, button {
     font-family: var(--font-sans);
-    line-height: 1.8; /* Increased line-height for body text */
+    line-height: 1.6;
   }
 }
 
-/* Custom glow effect for buttons */
-.btn-glow {
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
+/* Glassmorphism utility */
+.glass {
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
-.btn-glow::before {
+.glass-hover:hover {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(45, 212, 191, 0.3);
+  transition: all 0.3s ease;
+}
+
+/* Custom glow effect */
+.glow-effect {
+  position: relative;
+}
+
+.glow-effect::after {
   content: "";
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 300%;
-  height: 300%;
-  background-color: var(--color-digital-teal);
-  border-radius: 50%;
-  transition: all 0.7s ease-in-out;
-  transform: translate(-50%, -50%) scale(0);
-  opacity: 0.3; /* Subtle glow */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 15px rgba(45, 212, 191, 0);
+  transition: box-shadow 0.3s ease;
   z-index: -1;
 }
 
-.btn-glow:hover::before {
-  transform: translate(-50%, -50%) scale(1);
-  opacity: 0.6;
+.glow-effect:hover::after {
+  box-shadow: 0 0 25px rgba(45, 212, 191, 0.4);
 }
