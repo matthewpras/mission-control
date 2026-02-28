@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-midnight-blue: #0B0E14;
+    --color-digital-teal: #008080;
+    --color-soft-lavender: #E6E6FA;
+    --color-dark-charcoal: #1A1A1A; /* New darker charcoal for gradient */
+  }
+
+  /* Apply deep gradient background */
+  body {
+    background: linear-gradient(180deg, var(--color-midnight-blue) 0%, var(--color-dark-charcoal) 100%);
+    background-attachment: fixed; /* Ensures the gradient stays in place */
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    /* Fluid typography with clamp() */
+    font-size: clamp(2rem, 5vw, 4rem); /* Default for headers, will be overridden in specific components */
+    letter-spacing: 0.1em; /* Wide-tracked */
+    text-transform: uppercase;
+  }
+
+  p, span, div, a, button {
+    font-family: var(--font-sans);
+    line-height: 1.8; /* Increased line-height for body text */
+  }
+}
+
+/* Custom glow effect for buttons */
+.btn-glow {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn-glow::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 300%;
+  background-color: var(--color-digital-teal);
+  border-radius: 50%;
+  transition: all 0.7s ease-in-out;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0.3; /* Subtle glow */
+  z-index: -1;
+}
+
+.btn-glow:hover::before {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 0.6;
+}

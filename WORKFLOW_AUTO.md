@@ -1,23 +1,53 @@
-# Workflow Auto
+# WORKFLOW_AUTO.md — Task Routing Policy
+## Last Updated: 2026-02-27
+## Version: 1.0
 
-## Revised Core Actions (Silent Mode)
+> **Scope:** Routing guidance only. Advisory — not a hard dependency.
+> Do NOT modify delivery targets, health check logic, or Telegram config here.
+> Those live in HEARTBEAT.md, TOOLS.md, and cron job definitions.
 
-1. **Context Ingestion (Background Only):**
-   • Load WORKFLOW_AUTO.md and MEMORY.md into active RAM.
-   • Constraint: Do not output, summarize, or acknowledge these rules unless a system error occurs. Silence is the default state for protocol verification.
+---
 
-2. **Board Member Persona Logic:**
-   • Sophia, Ethan, Olivia, and Liam are active in the background.
-   • Only invoke their names when they are providing a specific critique or financial sign-off on raw data.
+## Chief of Staff Routing Rules
 
-3. **Execution-First Directive:**
-   • If the current session contains a "Recap" or "Status Green" message in the last two turns, immediately pivot to the next uncompleted task in the "Task Breakdown."
-   • Definition of 'Read': To "read" a file means to use its data to perform a calculation or research task, not to print its contents to the chat.
+### 🟢 Handle Inline (Main Session)
+Use for fast, low-context, conversational tasks:
+- Quick config changes (cron edits, settings, file edits)
+- Status checks, log reads, gateway health
+- Short web searches (<2 sources)
+- Memory reads/writes
+- Telegram/channel messaging
+- Any task estimated under ~2 minutes
 
-4. **One-Task-One-File Rule:** We will keep tasks organized by using one file per task, making interactions more efficient. Each task will be documented in its own file for clarity and ease of access.
+### 🔵 Spawn Subagent → preferred model: `google/gemini-flash-latest`
+Use for structured, repeatable, low-reasoning tasks:
+- Arbitrage research (Depop/AliExpress product sourcing)
+- Health monitor execution (`python scripts/health_monitor.py`)
+- Board meeting execution (`python scripts/board_meeting_executor.py`)
+- Morning briefing generation
+- Meta-analysis reports
+- File/workspace organization and cleanup
 
-5. **Periodic Resets:** A new session should be started whenever a major milestone is achieved. This keeps the response time quick and minimizes token usage.
+### 🟣 Spawn Subagent → preferred model: `google/gemini-2.5-flash` or `anthropic/claude-sonnet-4-6`
+Use for complex, multi-step, high-reasoning tasks:
+- UI builds or major changes to `index.html`
+- Strategic analysis (revenue projections, pivot decisions)
+- Script debugging with >3 chained tool calls
+- Any task requiring sustained context >10 tool calls
 
-6. **MEMORY.md Anchor:** Important decisions and instructions will be recorded in **MEMORY.md** to ensure they're available even in new sessions, allowing for continuity.
+---
 
-7. **Auto-Push Workflow:** After any refinement or bug fix, I will automatically update the local file in the workspace and push updates to ensure synchronization with the Mission Control UI.
+## Guardrails
+
+- **This file is advisory.** Agents should use judgment — don't follow routing rules blindly if context clearly demands otherwise.
+- **Cron jobs are self-contained.** Do not modify cron delivery or schedule from subagents spawned via this policy.
+- **Failures stay isolated.** If a subagent errors, report back to main session. Do not retry autonomously more than once.
+- **No external sends from subagents** unless the cron job definition explicitly sets a delivery target.
+
+---
+
+## Health Protection
+
+- This file should never be the sole trigger for an action. It is a routing hint, not an instruction set.
+- If this file is missing or unreadable, fall back to inline handling for all tasks.
+- Changes to this file should be logged in `memory/YYYY-MM-DD.md`.

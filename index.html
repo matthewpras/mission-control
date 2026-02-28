@@ -1306,10 +1306,10 @@
             { id: 'task-007', text: 'Achieve $100 profit by March 5th', status: 'pending', date: '2026-02-26' }
         ];
 
-        let agents = JSON.parse(localStorage.getItem('mc_agents')) || defaultAgents;
-        let decisions = JSON.parse(localStorage.getItem('mc_decisions')) || defaultDecisions;
-        let tasks = JSON.parse(localStorage.getItem('mc_tasks')) || defaultTasks;
-        let meetings = JSON.parse(localStorage.getItem('mc_meetings')) || defaultMeetings;
+        let agents = [];
+        let decisions = [];
+        let tasks = [];
+        let meetings = [];
         let activeAgentId = null;
 
         /* --- INITIALIZATION --- */
@@ -1333,27 +1333,57 @@
                 const { data: supabaseTasks, error: tasksError } = await sb.from('tasks').select('*').order('date', { ascending: false });
                 const { data: supabaseMeetings, error: meetingsError } = await sb.from('board_meetings').select('*').order('date', { ascending: false });
                 const { data: supabaseAgents, error: agentsError } = await sb.from('agents').select('*');
+                const { data: supabaseDecisions, error: decisionsError } = await sb.from('decisions').select('*').order('date', { ascending: false });
                 
                 if (!revError && !leadsError) {
                     renderDashboard(rev || [], leads || []);
                     renderRevenue(rev || []);
                     renderProjects(leads || []);
                     
-                    if (!tasksError && supabaseTasks) {
+                    if (!tasksError && supabaseTasks && supabaseTasks.length > 0) {
                         tasks = supabaseTasks;
-                        renderTasks();
+                    } else if (!tasksError && (!supabaseTasks || supabaseTasks.length === 0)) {
+                        const { data: newTasks, error: insertError } = await sb.from('tasks').insert(defaultTasks).select();
+                        if (insertError) console.error("Error seeding default tasks:", insertError);
+                        else tasks = newTasks;
                     }
-                    if (!meetingsError && supabaseMeetings) {
+                    if (!meetingsError && supabaseMeetings && supabaseMeetings.length > 0) {
                         meetings = supabaseMeetings;
-                        renderCommandCenter();
+                    } else if (!meetingsError && (!supabaseMeetings || supabaseMeetings.length === 0)) {
+                        const { data: newMeetings, error: insertError } = await sb.from('board_meetings').insert(defaultMeetings).select();
+                        if (insertError) console.error("Error seeding default meetings:", insertError);
+                        else meetings = newMeetings;
                     }
                     if (!agentsError && supabaseAgents && supabaseAgents.length > 0) {
-                        // Merge or replace
+                        // Map agent_id back to id for local consistency
                         agents = supabaseAgents.map(a => ({
                             ...a,
-                            id: a.agent_id // map back to local id
+                            id: a.agent_id
                         }));
+                    } else if (!agentsError && (!supabaseAgents || supabaseAgents.length === 0)) {
+                        // If no agents in Supabase, seed with defaultAgents
+                        const { data: newAgents, error: insertError } = await sb.from('agents').insert(defaultAgents.map(a => ({ ...a, agent_id: a.id }))).select();
+                        if (insertError) console.error("Error seeding default agents:", insertError);
+                        else {
+                            agents = newAgents.map(a => ({
+                                ...a,
+                                id: a.agent_id
+                            }));
+                        }
+                        // For decisions, since it's a simple array, handle it separately
+                        if (!decisionsError && supabaseDecisions && supabaseDecisions.length > 0) {
+                            decisions = supabaseDecisions;
+                        } else if (!decisionsError && (!supabaseDecisions || supabaseDecisions.length === 0)) {
+                            const { data: newDecisions, error: insertError } = await sb.from('decisions').insert(defaultDecisions).select();
+                            if (insertError) console.error("Error seeding default decisions:", insertError);
+                            else decisions = newDecisions;
+                        }
+
+                        // Re-render components that rely on these global arrays after all data is fetched/seeded
+                        renderTasks();
                         renderCommandCenter();
+                    } else {
+                        console.error("Error fetching agents from Supabase:", agentsError);
                     }
                 } else {
                     console.warn("Supabase fetch error, using fallback dashboard rendering.");
@@ -1478,9 +1508,7 @@
             // Persist to Supabase if UUID (string)
             if (typeof id === 'string' && id.length > 5) {
                 await sb.from('tasks').update({ status: newStatus }).match({ id });
-            } else {
-                localStorage.setItem('mc_tasks', JSON.stringify(tasks));
-            }
+
         }
 
         /* --- COMMAND CENTER --- */
@@ -1653,7 +1681,6 @@
             };
 
             agents.push(newAgent);
-            localStorage.setItem('mc_agents', JSON.stringify(agents));
 
             try {
                 const { error } = await sb.from('agents').insert([newAgent]);
@@ -1677,8 +1704,6 @@
             const agent = agents.find(a => a.id === activeAgentId);
             agent.activity.unshift(`[Command] ${task}`);
             agent.lastActive = 'Just now';
-            
-            localStorage.setItem('mc_agents', JSON.stringify(agents));
             input.value = '';
             closeModal('agent-task-modal');
             openAgentPanel(activeAgentId); // Refresh panel
