@@ -1227,7 +1227,7 @@
                 name: 'Kris',
                 role: 'Chief of Staff',
                 status: 'online',
-                model: 'Gemini 2.0 Flash',
+                model: 'Gemini 2.5 Flash',
                 lastActive: 'Just now',
                 description: 'Primary workspace conductor and moderator for the Board of Directors. Oversees operations and continuity.',
                 capabilities: ['Arbitrage Scan', 'Board Moderation', 'UI Maintenance', 'Memory Recovery'],
@@ -1251,7 +1251,7 @@
                 name: 'Ethan',
                 role: 'Chief Supply Chain Officer (CSCO)',
                 status: 'online',
-                model: 'Sonnet 3.5',
+                model: 'Gemini 2.5 Flash',
                 lastActive: 'Just now',
                 description: 'Focuses on resource allocation, physical e-commerce fulfillment, logistics, and optimizing operational overhead.',
                 capabilities: ['Process Automation', 'Efficiency Audit', 'Resource Mgmt'],
@@ -1263,7 +1263,7 @@
                 name: 'Olivia',
                 role: 'Chief Financial Officer (CFO)',
                 status: 'online',
-                model: 'GPT-4o-mini',
+                model: 'Gemini 2.5 Flash',
                 lastActive: 'Just now',
                 description: 'Focuses on overall financial strategy, Kalshi ROI, liquidity, and executive reporting.',
                 capabilities: ['ROI Analysis', 'Margin Optimization', 'Risk Assessment'],
@@ -1287,7 +1287,7 @@
                 name: 'Finn',
                 role: 'Lead Auditor (Finance)',
                 status: 'online',
-                model: 'GPT-4o',
+                model: 'Gemini 2.5 Flash',
                 lastActive: 'Just now',
                 description: 'Focuses on micro-level transaction integrity. Audits the Kalshi API logs, verifies daily ledger accuracy, and flags algorithmic discrepancies.',
                 capabilities: ['EV Calculation', 'Fee Analysis', 'Capital Allocation'],
@@ -1299,7 +1299,7 @@
                 name: 'Silas',
                 role: 'Risk Analyst (Finance)',
                 status: 'online',
-                model: 'GPT-4o',
+                model: 'Gemini 2.5 Flash',
                 lastActive: 'Just now',
                 description: 'Focuses on macro-level capital allocation. Audits e-commerce cash flow, assesses scaling risks, and ensures healthy liquidity buffers.',
                 capabilities: ['News Analysis', 'Information Edge', 'Source Verification'],
@@ -1311,7 +1311,7 @@
                 name: 'Vera',
                 role: 'Contrarian',
                 status: 'online',
-                model: 'GPT-4o',
+                model: 'Gemini 2.5 Flash',
                 lastActive: 'Just now',
                 description: 'Focuses on market psychology, sentiment extremes, and protecting against groupthink.',
                 capabilities: ['Sentiment Analysis', 'Contrarian Signals', 'Risk Protection'],
@@ -1760,19 +1760,37 @@
             ['new-agent-id', 'new-agent-name', 'new-agent-role', 'new-agent-desc'].forEach(f => document.getElementById(f).value = '');
         }
 
-        function submitAgentTask() {
+        async function submitAgentTask() {
             const input = document.getElementById('agent-task-input');
             const task = input.value.trim();
             if (!task || !activeAgentId) return;
 
             const agent = agents.find(a => a.id === activeAgentId);
-            agent.activity.unshift(`[Command] ${task}`);
-            agent.lastActive = 'Just now';
-            input.value = '';
-            closeModal('agent-task-modal');
-            openAgentPanel(activeAgentId); // Refresh panel
-            renderCommandCenter(); // Refresh grid
-            alert(`Task dispatched to ${agent.name}`);
+            
+            try {
+                // Push task to Supabase for the backend executor to pick up
+                const { data, error } = await sb.from('tasks').insert([{
+                    text: `[AGENT: ${activeAgentId}] ${task}`,
+                    status: 'pending',
+                    date: new Date().toISOString().split('T')[0]
+                }]);
+                
+                if (error) throw error;
+
+                agent.activity.unshift(`[Command] ${task}`);
+                agent.lastActive = 'Just now';
+                input.value = '';
+                closeModal('agent-task-modal');
+                openAgentPanel(activeAgentId); // Refresh panel
+                renderCommandCenter(); // Refresh grid
+                alert(`Task dispatched to ${agent.name}`);
+                
+                // Refresh data to show the new pending task in the UI
+                await fetchData();
+            } catch (e) {
+                console.error("Task dispatch failed:", e);
+                alert("Failed to dispatch task: " + e.message);
+            }
         }
 
         /* --- ACTIONS --- */

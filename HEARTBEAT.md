@@ -1,6 +1,7 @@
 ## Core Objectives  
 - [ ] **Health Monitoring:** Run `python scripts/health_monitor.py`. Only report if "ALERT" is found in the output.
 - [ ] **Board Meeting Scheduler:** Run `python scripts/board_meeting_executor.py` to process scheduled meetings.
+- [ ] **Agent Task Dispatch:** Run `python scripts/agent_task_executor.py` to process UI-dispatched agent commands from the Mission Control dashboard.
 - [ ] **System Integrity:** Check `openclaw gateway status`.  
 - [ ] **Mission Control Sync:** Ensure `index.html` (V2 Cloud) is syncing revenue/tasks via Supabase. Update `tasks.json` with my current active tasks.
 - [ ] **Task Synchronization:** Sync `tasks.json` to the UI (currently via `index.html` manual update until Supabase table is live).  
