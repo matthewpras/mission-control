@@ -46,5 +46,17 @@
     "text": "Set up Kalshi/Polymarket cross-platform arbitrage scanner",
     "status": "pending",
     "date": "2026-02-27"
+  },
+  {
+    "id": "task-013",
+    "text": "Finalize specific AliExpress camera models/suppliers (Vintage Digicam)",
+    "status": "pending",
+    "date": "2026-02-28"
+  },
+  {
+    "id": "task-014",
+    "text": "Monitor Depop for margin validation (Vintage Digicam)",
+    "status": "pending",
+    "date": "2026-02-28"
   }
 ]
