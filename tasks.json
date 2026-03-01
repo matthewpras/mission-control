@@ -36,6 +36,12 @@
     "date": "2026-02-27"
   },
   {
+    "id": "task-007",
+    "text": "Achieve $100 profit by March 5th",
+    "status": "pending",
+    "date": "2026-02-26"
+  },
+  {
     "id": "task-011",
     "text": "Develop Kalshi Trading Algorithm (Phase 1: Paper Trading)",
     "status": "pending",
@@ -57,6 +63,18 @@
     "id": "task-014",
     "text": "Monitor Depop for margin validation (Vintage Digicam)",
     "status": "pending",
+    "date": "2026-02-28"
+  },
+  {
+    "id": "task-015",
+    "text": "Board Meeting: Create a detailed plan to reach $100 by March 5th goal.",
+    "status": "completed",
+    "date": "2026-02-27"
+  },
+  {
+    "id": "task-016",
+    "text": "Board Meeting: One new venture for the company (Arbitrage/Niche Audit).",
+    "status": "completed",
     "date": "2026-02-28"
   }
 ]

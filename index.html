@@ -839,11 +839,10 @@
                 <p id="current-date" class="live-time">Tuesday, February 24, 2026</p>
             </div>
 
-            <!-- --- NEW TASKS SECTION --- -->
             <div class="card" style="margin-bottom: 2.5rem; animation-delay: 0.05s;">
                 <div class="section-title">
-                    📋 Daily Tasks
-                    <span class="performance-tag" id="task-completion-stat">0/0</span>
+                    <div>📋 Daily Tasks <span class="performance-tag" id="task-completion-stat">0/0</span></div>
+                    <button id="toggle-completed-btn" class="btn btn-cancel" style="font-size: 0.75rem; padding: 4px 12px; border: 1px solid var(--glass-border);" onclick="toggleShowCompleted()">Show Completed</button>
                 </div>
                 <div id="dashboard-tasks-list" class="priority-list">
                     <!-- Loaded Active Tasks -->
@@ -1238,11 +1237,11 @@
             {
                 id: 'sophia-growth',
                 name: 'Sophia',
-                role: 'Growth Strategist (Board)',
+                role: 'Chief Marketing Officer (CMO)',
                 status: 'online',
                 model: 'GPT-4o',
                 lastActive: 'Just now',
-                description: 'Board member focused on expansion, market trends, and long-term revenue streams.',
+                description: 'Focuses on market receptivity, demand validation, e-commerce growth strategies, and consumer behavior.',
                 capabilities: ['Market Expansion', 'Strategic Vision', 'Forecasting'],
                 performance: 'Strategic: High / Aggressive',
                 activity: ['Analyzed 2026 fashion trends', 'Approved Blank Slate mandate']
@@ -1250,11 +1249,11 @@
             {
                 id: 'ethan-ops',
                 name: 'Ethan',
-                role: 'Operations Lead (Board)',
+                role: 'Chief Supply Chain Officer (CSCO)',
                 status: 'online',
                 model: 'Sonnet 3.5',
                 lastActive: 'Just now',
-                description: 'Board member focused on efficiency, automation, and host resource optimization.',
+                description: 'Focuses on resource allocation, physical e-commerce fulfillment, logistics, and optimizing operational overhead.',
                 capabilities: ['Process Automation', 'Efficiency Audit', 'Resource Mgmt'],
                 performance: 'Precision: 99% / Conservative',
                 activity: ['Completed gateway stability check', 'Recovered from busy state']
@@ -1262,11 +1261,11 @@
             {
                 id: 'olivia-finance',
                 name: 'Olivia',
-                role: 'Financial Director (Board)',
+                role: 'Chief Financial Officer (CFO)',
                 status: 'online',
                 model: 'GPT-4o-mini',
                 lastActive: 'Just now',
-                description: 'Board member focused on ROI, margins, and financial integrity of arbitrage operations.',
+                description: 'Focuses on overall financial strategy, Kalshi ROI, liquidity, and executive reporting.',
                 capabilities: ['ROI Analysis', 'Margin Optimization', 'Risk Assessment'],
                 performance: 'Financial Accuracy: 100%',
                 activity: ['Validated Depop lead margins', 'Logged daily revenue goal progress']
@@ -1274,14 +1273,50 @@
             {
                 id: 'liam-tech',
                 name: 'Liam',
-                role: 'Technical Architect (Board)',
+                role: 'Chief Technology & Legal Officer (CTO/CLO)',
                 status: 'online',
                 model: 'Claude 3.5 Sonnet',
                 lastActive: 'Just now',
-                description: 'Board member focused on code quality, security, and the Mission Control tech stack.',
+                description: 'Focuses on technical dependencies, compliance, API security, and legal frameworks.',
                 capabilities: ['System Architecture', 'Security Hardening', 'Code Review'],
                 performance: 'Architecture Integrity: 98%',
                 activity: ['Secured Supabase connections', 'Fixed iPhone navigation CSS']
+            },
+            {
+                id: 'finn-quant',
+                name: 'Finn',
+                role: 'Lead Auditor (Finance)',
+                status: 'online',
+                model: 'GPT-4o',
+                lastActive: 'Just now',
+                description: 'Focuses on micro-level transaction integrity. Audits the Kalshi API logs, verifies daily ledger accuracy, and flags algorithmic discrepancies.',
+                capabilities: ['EV Calculation', 'Fee Analysis', 'Capital Allocation'],
+                performance: 'Quant Accuracy: 99%',
+                activity: ['Reviewed Kalshi trade EV', 'Approved prediction market strategy']
+            },
+            {
+                id: 'silas-arbiter',
+                name: 'Silas',
+                role: 'Risk Analyst (Finance)',
+                status: 'online',
+                model: 'GPT-4o',
+                lastActive: 'Just now',
+                description: 'Focuses on macro-level capital allocation. Audits e-commerce cash flow, assesses scaling risks, and ensures healthy liquidity buffers.',
+                capabilities: ['News Analysis', 'Information Edge', 'Source Verification'],
+                performance: 'Intel Accuracy: 97%',
+                activity: ['Scanned news for prediction edge', 'Verified information arbitrage signals']
+            },
+            {
+                id: 'vera-contrarian',
+                name: 'Vera',
+                role: 'Contrarian',
+                status: 'online',
+                model: 'GPT-4o',
+                lastActive: 'Just now',
+                description: 'Focuses on market psychology, sentiment extremes, and protecting against groupthink.',
+                capabilities: ['Sentiment Analysis', 'Contrarian Signals', 'Risk Protection'],
+                performance: 'Contrarian Accuracy: 95%',
+                activity: ['Flagged crowded trades', 'Identified potential reversals']
             }
         ];
 
@@ -1297,13 +1332,19 @@
         ];
 
         const defaultTasks = [
-            { id: 'task-001', text: 'Board Audit: Spring 2026 Fashion Items (Nova/Finn)', status: 'completed', date: '2026-02-26' },
-            { id: 'task-002', text: 'Mobile UI Fixes: Command Center (Horizontal Scroll & Visibility)', status: 'completed', date: '2026-02-26' },
-            { id: 'task-003', text: 'Supplier Deep-Dive: AliExpress Reliability Audit', status: 'completed', date: '2026-02-26' },
-            { id: 'task-004', text: 'Sync Agent Registry to Supabase', status: 'pending', date: '2026-02-26' },
-            { id: 'task-005', text: 'Research high-ROI arbitrage leads for \'Vintage Digicam\' trend', status: 'completed', date: '2026-02-26' },
-            { id: 'task-006', text: 'Monitor Depop dropshipping margins and inventory', status: 'pending', date: '2026-02-26' },
-            { id: 'task-007', text: 'Achieve $100 profit by March 5th', status: 'pending', date: '2026-02-26' }
+            { "id": "task-001", "text": "Board Audit: Spring 2026 Fashion Items (Nova/Finn)", "status": "completed", "date": "2026-02-26" },
+            { "id": "task-002", "text": "Mobile UI Fixes: Command Center (Horizontal Scroll & Visibility)", "status": "completed", "date": "2026-02-26" },
+            { "id": "task-003", "text": "Supplier Deep-Dive: AliExpress Reliability Audit", "status": "completed", "date": "2026-02-26" },
+            { "id": "task-004", "text": "Sync Agent Registry to Supabase", "status": "completed", "date": "2026-02-27" },
+            { "id": "task-005", "text": "Research high-ROI arbitrage leads for 'Vintage Digicam' trend", "status": "completed", "date": "2026-02-26" },
+            { "id": "task-006", "text": "Monitor Kalshi market liquidity and event probabilities", "status": "pending", "date": "2026-02-27" },
+            { "id": "task-007", "text": "Achieve $100 profit by March 5th", "status": "pending", "date": "2026-02-26" },
+            { "id": "task-011", "text": "Develop Kalshi Trading Algorithm (Phase 1: Paper Trading)", "status": "pending", "date": "2026-02-27" },
+            { "id": "task-012", "text": "Set up Kalshi/Polymarket cross-platform arbitrage scanner", "status": "pending", "date": "2026-02-27" },
+            { "id": "task-013", "text": "Finalize specific AliExpress camera models/suppliers (Vintage Digicam)", "status": "pending", "date": "2026-02-28" },
+            { "id": "task-014", "text": "Monitor Depop for margin validation (Vintage Digicam)", "status": "pending", "date": "2026-02-28" },
+            { "id": "task-015", "text": "Board Meeting: Create a detailed plan to reach $100 by March 5th goal.", "status": "completed", "date": "2026-02-27" },
+            { "id": "task-016", "text": "Board Meeting: One new venture for the company (Arbitrage/Niche Audit).", "status": "completed", "date": "2026-02-28" }
         ];
 
         let agents = [];
@@ -1479,12 +1520,17 @@
         }
 
         /* --- TASKS --- */
+        let showCompleted = false;
+
         function renderTasks() {
             const list = document.getElementById('dashboard-tasks-list');
             const doneCount = tasks.filter(t => t.status === 'completed').length;
             document.getElementById('task-completion-stat').innerText = `${doneCount}/${tasks.length}`;
 
-            list.innerHTML = tasks.map(task => `
+            // Filter tasks based on showCompleted toggle
+            const filteredTasks = showCompleted ? tasks : tasks.filter(t => t.status !== 'completed');
+
+            list.innerHTML = filteredTasks.map(task => `
                 <div class="priority-item ${task.status === 'completed' ? 'completed' : ''}">
                     <div class="checkbox ${task.status === 'completed' ? 'checked' : ''}" onclick="toggleTask('${task.id}')"></div>
                     <div class="priority-text">
@@ -1493,6 +1539,12 @@
                     </div>
                 </div>
             `).join('');
+
+            if (filteredTasks.length === 0 && tasks.length > 0) {
+                list.innerHTML = `<div class="priority-text" style="color: var(--text-muted); text-align: center; padding: 1rem;">
+                    ${showCompleted ? 'No tasks found.' : 'All tasks completed! 🎉 (Check "Show Completed" to see history)'}
+                </div>`;
+            }
         }
 
         async function toggleTask(id) {
@@ -1507,14 +1559,26 @@
 
             // Persist to Supabase if UUID (string)
             if (typeof id === 'string' && id.length > 5) {
-                await sb.from('tasks').update({ status: newStatus }).match({ id });
+                try {
+                    const { error } = await sb.from('tasks').update({ status: newStatus }).match({ id });
+                    if (error) console.warn("Supabase task toggle error:", error);
+                } catch (e) {
+                    console.error("Supabase toggle failed:", e);
+                }
+            }
+        }
 
+        function toggleShowCompleted() {
+            showCompleted = !showCompleted;
+            const btn = document.getElementById('toggle-completed-btn');
+            btn.innerText = showCompleted ? 'Hide Completed' : 'Show Completed';
+            renderTasks();
         }
 
         /* --- COMMAND CENTER --- */
         // Agent classification
-        const BOARD_IDS = ['sophia-growth','ethan-ops','olivia-finance','liam-tech','finn-quant','silas-arbiter','vera-contrarian'];
-        const AUDIT_IDS = ['audit-lead','audit-ops'];
+        const BOARD_IDS = ['sophia-growth', 'ethan-ops', 'olivia-finance', 'liam-tech'];
+        const AUDIT_IDS = ['finn-quant', 'silas-arbiter', 'vera-contrarian'];
         const WORKER_IDS = ['mc-designer-01'];
 
         function agentCard(agent, accentColor) {

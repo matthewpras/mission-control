@@ -32,11 +32,11 @@ AGENTS = [
     {
         "agent_id": "sophia-growth",
         "name": "Sophia",
-        "role": "Growth Strategist (Board)",
+        "role": "Chief Marketing Officer (CMO)",
         "status": "online",
         "model": "GPT-4o",
         "lastActive": "Just now",
-        "description": "Board member focused on expansion, market trends, and long-term revenue streams.",
+        "description": "Focuses on market receptivity, demand validation, e-commerce growth strategies, and consumer behavior.",
         "capabilities": ["Market Expansion", "Strategic Vision", "Forecasting"],
         "performance": "Strategic: High / Aggressive",
         "activity": ["Analyzed 2026 fashion trends", "Approved Blank Slate mandate"]
@@ -44,11 +44,11 @@ AGENTS = [
     {
         "agent_id": "ethan-ops",
         "name": "Ethan",
-        "role": "Operations Lead (Board)",
+        "role": "Chief Supply Chain Officer (CSCO)",
         "status": "online",
         "model": "Claude Sonnet 3.5",
         "lastActive": "Just now",
-        "description": "Board member focused on efficiency, automation, and host resource optimization.",
+        "description": "Focuses on resource allocation, physical e-commerce fulfillment, logistics, and optimizing operational overhead.",
         "capabilities": ["Process Automation", "Efficiency Audit", "Resource Mgmt"],
         "performance": "Precision: 99% / Conservative",
         "activity": ["Completed gateway stability check", "Recovered from busy state"]
@@ -56,11 +56,11 @@ AGENTS = [
     {
         "agent_id": "olivia-finance",
         "name": "Olivia",
-        "role": "Financial Director (Board)",
+        "role": "Chief Financial Officer (CFO)",
         "status": "online",
         "model": "GPT-4o-mini",
         "lastActive": "Just now",
-        "description": "Board member focused on ROI, margins, and financial integrity of arbitrage operations.",
+        "description": "Focuses on overall financial strategy, Kalshi ROI, liquidity, and executive reporting.",
         "capabilities": ["ROI Analysis", "Margin Optimization", "Risk Assessment"],
         "performance": "Financial Accuracy: 100%",
         "activity": ["Validated Depop lead margins", "Logged daily revenue goal progress"]
@@ -68,11 +68,11 @@ AGENTS = [
     {
         "agent_id": "liam-tech",
         "name": "Liam",
-        "role": "Technical Architect (Board)",
+        "role": "Chief Technology & Legal Officer (CTO/CLO)",
         "status": "online",
         "model": "Claude Sonnet 3.5",
         "lastActive": "Just now",
-        "description": "Board member focused on code quality, security, and the Mission Control tech stack.",
+        "description": "Focuses on technical dependencies, compliance, API security, and legal frameworks.",
         "capabilities": ["System Architecture", "Security Hardening", "Code Review"],
         "performance": "Architecture Integrity: 98%",
         "activity": ["Secured Supabase connections", "Fixed iPhone navigation CSS"]
@@ -80,11 +80,11 @@ AGENTS = [
     {
         "agent_id": "finn-quant",
         "name": "Finn",
-        "role": "Quant / CFO (Kalshi Board)",
+        "role": "Lead Auditor (Finance)",
         "status": "online",
         "model": "GPT-4o",
         "lastActive": "Just now",
-        "description": "Kalshi board member focused on Expected Value, fee structures, and capital allocation.",
+        "description": "Focuses on micro-level transaction integrity. Audits the Kalshi API logs, verifies daily ledger accuracy, and flags algorithmic discrepancies.",
         "capabilities": ["EV Calculation", "Fee Analysis", "Capital Allocation"],
         "performance": "Quant Accuracy: 99%",
         "activity": ["Reviewed Kalshi trade EV", "Approved prediction market strategy"]
@@ -92,11 +92,11 @@ AGENTS = [
     {
         "agent_id": "silas-arbiter",
         "name": "Silas",
-        "role": "Information Arbiter (Kalshi Board)",
+        "role": "Risk Analyst (Finance)",
         "status": "online",
         "model": "GPT-4o",
         "lastActive": "Just now",
-        "description": "Kalshi board member focused on real-time news, information arbitrage, and source verification.",
+        "description": "Focuses on macro-level capital allocation. Audits e-commerce cash flow, assesses scaling risks, and ensures healthy liquidity buffers.",
         "capabilities": ["News Analysis", "Information Edge", "Source Verification"],
         "performance": "Intel Accuracy: 97%",
         "activity": ["Scanned news for prediction edge", "Verified information arbitrage signals"]
