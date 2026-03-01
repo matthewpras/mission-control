@@ -112,6 +112,18 @@ AGENTS = [
         "capabilities": ["Sentiment Analysis", "Contrarian Signals", "Risk Protection"],
         "performance": "Contrarian Accuracy: 95%",
         "activity": ["Flagged crowded trades", "Identified potential reversals"]
+    },
+    {
+        "agent_id": "nora-research",
+        "name": "Nora",
+        "role": "Lead Researcher (Operations)",
+        "status": "online",
+        "model": "Gemini 2.5 Flash",
+        "lastActive": "Just now",
+        "description": "Focuses on deep-dive market research, supplier auditing, and identifying emerging arbitrage trends.",
+        "capabilities": ["Market Research", "Data Synthesis", "Trend Analysis"],
+        "performance": "High Throughput",
+        "activity": ["Provisioned into Operations Team"]
     }
 ]
 
