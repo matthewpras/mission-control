@@ -1032,7 +1032,7 @@
             <!-- Board of Directors -->
             <div class="section-title" style="border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
                 🏛️ Board of Directors
-                <button class="btn btn-primary" style="font-size: 0.75rem; padding: 4px 12px;" onclick="openAgentModal()">+ Add Agent</button>
+                <button class="btn btn-cancel" style="font-size: 0.75rem; padding: 4px 12px; border-color: var(--danger); color: var(--danger);" onclick="promptDeleteAgent()">- Delete Agent</button>
             </div>
             <p style="color: var(--text-muted); font-size: 0.82rem; margin: -1rem 0 1.5rem;">Responsible for major strategic decisions across all operations.</p>
             <div class="metrics-grid" id="board-grid" style="margin-bottom: 2.5rem;">
@@ -1099,7 +1099,10 @@
         <div id="panel-content">
             <!-- Content populated by JS -->
         </div>
-        <button class="btn btn-primary" style="width: 100%; margin-top: 2rem;" onclick="openAgentTaskModal()">Send Task</button>
+        <div style="display: flex; gap: 12px; margin-top: 2rem;">
+            <button class="btn btn-primary" style="flex: 1;" onclick="openAgentTaskModal()">Send Task</button>
+            <button class="btn btn-danger" style="flex: 1;" onclick="deleteCurrentAgent()">Terminate</button>
+        </div>
     </div>
 
     <!-- --- MEETING OVERVIEW MODAL --- -->
@@ -1679,6 +1682,39 @@
             `;
 
             panel.classList.add('open');
+        }
+
+        async function promptDeleteAgent() {
+            const id = prompt('Enter the exact Agent ID to delete (e.g., nora-research):');
+            if (!id) return;
+            if (confirm('Are you sure you want to terminate ' + id + '?')) {
+                try {
+                    await sb.from('agents').delete().match({ agent_id: id });
+                    agents = agents.filter(a => a.id !== id && a.agent_id !== id);
+                    renderCommandCenter();
+                    alert('Agent ' + id + ' terminated.');
+                } catch (e) {
+                    console.error("Delete failed:", e);
+                    alert("Failed to delete agent: " + e.message);
+                }
+            }
+        }
+
+        async function deleteCurrentAgent() {
+            if (!activeAgentId) return;
+            const id = activeAgentId;
+            if (confirm('Are you sure you want to terminate ' + id + '?')) {
+                try {
+                    await sb.from('agents').delete().match({ agent_id: id });
+                    agents = agents.filter(a => a.id !== id && a.agent_id !== id);
+                    renderCommandCenter();
+                    closeAgentPanel();
+                    alert('Agent ' + id + ' terminated.');
+                } catch (e) {
+                    console.error("Delete failed:", e);
+                    alert("Failed to delete agent: " + e.message);
+                }
+            }
         }
 
         async function updateAgentModel(agentId, newModel) {
