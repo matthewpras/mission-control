@@ -118,7 +118,7 @@ AGENTS = [
         "name": "Nora",
         "role": "Lead Researcher (Operations)",
         "status": "online",
-        "model": "Gemini 2.5 Flash",
+        "model": "Gemini 3.1 Pro",
         "lastActive": "Just now",
         "description": "Focuses on deep-dive market research, supplier auditing, and identifying emerging arbitrage trends.",
         "capabilities": ["Market Research", "Data Synthesis", "Trend Analysis"],
