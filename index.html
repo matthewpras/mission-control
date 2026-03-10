@@ -807,13 +807,14 @@
                 margin-top: 0.2rem;
                 -webkit-overflow-scrolling: touch;
                 scrollbar-width: none;
-                mask-image: linear-gradient(to right, black 85%, transparent 100%);
-                -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+                mask-image: none;
+                -webkit-mask-image: none;
+                overflow-x: auto;
             }
             nav::-webkit-scrollbar { display: none; }
             .nav-link { 
                 flex-shrink: 0; 
-                
+                white-space: nowrap;
                 padding: 6px 12px;
                 font-size: 0.85rem;
             }
@@ -897,10 +898,10 @@
                     <div class="card-accent" style="background: #10b981"></div>
                     <div class="metric-label">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                        Daily Status
+                        Health Status
                     </div>
-                    <div class="metric-value">Active</div>
-                    <div class="trend up">Systems Normal</div>
+                    <div class="metric-value" id="stat-health">Healthy</div>
+                    <div class="trend up" id="stat-health-msg">All systems normal</div>
                 </div>
                 <div class="card" style="animation-delay: 0.4s">
                     <div class="card-accent" style="background: #ef4444"></div>
@@ -1463,6 +1464,38 @@
             .subscribe();
         }
 
+        function renderIntel(leads) {
+            const briefList = document.getElementById('daily-brief-list');
+            if (!briefList) return;
+
+            briefList.innerHTML = '';
+
+            const intelLeads = (leads || []).filter(l => l.category === 'B2B Outreach' || l.category === 'Market Intel' || l.category === 'Intel');
+            
+            if (intelLeads.length === 0) {
+                briefList.innerHTML = '<p class="text-muted" style="padding: 1.5rem; text-align: center;">Gathering intelligence on Philadelphia SaaS founders...</p>';
+                return;
+            }
+
+            intelLeads.forEach(lead => {
+                const item = document.createElement('div');
+                item.className = 'intel-item';
+                item.style = 'padding: 1rem; border-bottom: 1px solid var(--glass-border);';
+                item.innerHTML = `
+                    <div class="intel-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                        <span class="intel-title" style="font-weight: 600; color: var(--text-primary);">${lead.title}</span>
+                        <span class="performance-tag" style="background: rgba(139, 92, 246, 0.1); color: var(--accent-purple); padding: 2px 8px; border-radius: 4px; font-size: 0.7rem;">${lead.status}</span>
+                    </div>
+                    <p class="intel-summary" style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 8px;">${lead.notes || 'No details available.'}</p>
+                    ${lead.link ? `<a href="${lead.link}" target="_blank" class="intel-link" style="font-size: 0.8rem; color: var(--accent-purple); text-decoration: none;">View Profile →</a>` : ''}
+                `;
+                briefList.appendChild(item);
+            });
+
+            const updatedAt = document.getElementById('intel-updated-at');
+            if (updatedAt) updatedAt.innerText = `Last updated: ${new Date().toLocaleTimeString()}`;
+        }
+
         async function fetchData() {
             try {
                 const { data: rev, error: revError } = await sb.from('revenue').select('*').order('date', { ascending: false });
@@ -1476,6 +1509,7 @@
                     renderDashboard(rev || [], leads || []);
                     renderRevenue(rev || []);
                     renderProjects(leads || []);
+                    renderIntel(leads || []);
                     
                     if (!tasksError && supabaseTasks && supabaseTasks.length > 0) {
                         tasks = supabaseTasks;
@@ -1539,6 +1573,16 @@
             document.getElementById('stat-revenue').innerText = `$${total.toLocaleString()} / $${TARGET_GOAL.toLocaleString()}`;
             document.getElementById('stat-revenue-trend').innerText = `${progress}% progress`;
             document.getElementById('stat-projects').innerText = leads.filter(l => l.status !== 'Closed').length;
+
+            const healthEl = document.getElementById('stat-health');
+            const healthMsg = document.getElementById('stat-health-msg');
+            if (healthEl && healthMsg) {
+                healthEl.innerText = 'Healthy';
+                healthEl.parentElement.querySelector('.card-accent').style.background = '#10b981';
+                healthMsg.innerText = 'All systems normal';
+                healthMsg.className = 'trend up';
+            }
+        
 
             const activityList = document.getElementById('activity-list');
             const allItems = [
