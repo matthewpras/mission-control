@@ -12,6 +12,7 @@ _meta.json
 
 # Logs and Session State
 memory/
+memory_temp/
 logs/
 heartbeat-state.json
 

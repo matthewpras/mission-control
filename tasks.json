@@ -88,5 +88,23 @@
     "text": "Connect supplier (AutoDS/Zendrop) to EmberMist Shopify store",
     "status": "pending",
     "date": "2026-03-03"
+  },
+  {
+    "id": "task-021",
+    "text": "Design Apollo API prospecting script for SaaS founders (Concierge Engine)",
+    "status": "pending",
+    "date": "2026-03-10"
+  },
+  {
+    "id": "task-022",
+    "text": "Implement Mission Control 'Intel' tab for B2B prospecting data",
+    "status": "pending",
+    "date": "2026-03-10"
+  },
+  {
+    "id": "task-023",
+    "text": "Clean up workspace untracked files and consolidate 'ghost files'",
+    "status": "pending",
+    "date": "2026-03-10"
   }
 ]
