@@ -99,7 +99,7 @@
             box-shadow: 0 0 15px var(--accent-glow);
         }
 
-        nav {
+        nav { flex-wrap: wrap;
             display: flex;
             gap: 8px;
         }
@@ -375,7 +375,7 @@
         .chart-bar:hover { filter: brightness(1.2); }
         .chart-label { font-size: 0.7rem; color: var(--text-muted); }
 
-        .client-table-container { overflow-x: auto; }
+        .client-table-container {  }
         .client-table {
             width: 100%;
             border-collapse: collapse;
@@ -750,6 +750,27 @@
         .activity-log-item { font-size: 0.85rem; padding: 10px 0; border-bottom: 1px solid var(--glass-border); color: var(--text-secondary); }
         .activity-log-item:last-child { border-bottom: none; }
 
+        /* --- Intel Tab --- */
+        .intel-daily { margin-bottom: 1.5rem; }
+        .intel-subtext { font-size: 0.8rem; color: var(--text-muted); }
+        .intel-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+        .intel-card { background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .intel-card h4 { font-size: 1rem; }
+        .intel-card p { color: var(--text-secondary); font-size: 0.85rem; }
+        .intel-card a { color: var(--accent-purple); font-size: 0.8rem; text-decoration: none; }
+        .intel-card-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); }
+        .importance-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 0.75rem; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.04em; }
+        .tag-hot { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+        .tag-notable { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+        .tag-reference { background: rgba(14, 165, 233, 0.15); color: #38bdf8; }
+        .intel-filters { margin-bottom: 1.5rem; }
+        .intel-filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .intel-category-sections { display: flex; flex-direction: column; gap: 1.5rem; }
+        .intel-category-block { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); padding: 1.5rem; }
+        .intel-category-block h3 { margin-bottom: 1rem; font-size: 1rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08em; }
+        .intel-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+        .intel-empty { font-size: 0.85rem; color: var(--text-muted); }
+
         @media (max-width: 1200px) {
             .metrics-grid { grid-template-columns: repeat(2, 1fr); }
             .dashboard-content { grid-template-columns: 1fr; }
@@ -778,9 +799,9 @@
                 top: 1.25rem;
                 right: 1rem;
             }
-            nav { 
+            nav { flex-wrap: wrap; 
                 display: flex; 
-                overflow-x: auto; 
+                 
                 width: 100%;
                 padding-bottom: 0.8rem;
                 margin-top: 0.2rem;
@@ -792,7 +813,7 @@
             nav::-webkit-scrollbar { display: none; }
             .nav-link { 
                 flex-shrink: 0; 
-                white-space: nowrap;
+                
                 padding: 6px 12px;
                 font-size: 0.85rem;
             }
@@ -819,6 +840,7 @@
             <div class="nav-link" data-tab="projects">📋 Pipeline</div>
             <div class="nav-link" data-tab="timeline">📅 Timeline</div>
             <div class="nav-link" data-tab="notes">📝 Notes</div>
+            <div class="nav-link" data-tab="intel">📡 Intel</div>
         </nav>
 
         <div class="header-right">
@@ -1018,6 +1040,65 @@
         <!-- --- NOTES TAB --- -->
         <div id="tab-notes" class="tab-content hidden">
             <textarea class="notes-area" id="main-notes" placeholder="Cloud-synced notes (Feature pending)..."></textarea>
+        </div>
+
+        <!-- --- INTEL TAB --- -->
+        <div id="tab-intel" class="tab-content hidden">
+            <div class="card intel-daily">
+                <div class="section-title">
+                    Daily Brief
+                    <span class="intel-subtext" id="intel-updated-at"></span>
+                </div>
+                <div id="daily-brief-list" class="intel-list"></div>
+            </div>
+
+            <div class="card intel-filters">
+                <div class="intel-filter-grid">
+                    <div class="form-group">
+                        <label for="intel-category-filter">Category</label>
+                        <select class="form-control" id="intel-category-filter"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="intel-importance-filter">Importance</label>
+                        <select class="form-control" id="intel-importance-filter"></select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="intel-category-sections" class="intel-category-sections"></div>
+
+            <div class="card" style="margin-top: 2rem;">
+                <div class="section-title">Add Intel</div>
+                <form id="intel-form" class="intel-form">
+                    <div class="intel-form-grid">
+                        <div>
+                            <label>Title</label>
+                            <input type="text" id="intel-title" class="form-control" placeholder="Key headline" required>
+                        </div>
+                        <div>
+                            <label>Summary</label>
+                            <textarea id="intel-summary" class="form-control" rows="2" placeholder="1-2 sentence context" required></textarea>
+                        </div>
+                        <div>
+                            <label>Source Link</label>
+                            <input type="url" id="intel-source" class="form-control" placeholder="https://" required>
+                        </div>
+                        <div>
+                            <label>Category</label>
+                            <select id="intel-category" class="form-control" required></select>
+                        </div>
+                        <div>
+                            <label>Importance</label>
+                            <select id="intel-importance" class="form-control" required>
+                                <option value="hot">🔥 Hot</option>
+                                <option value="notable">⚡ Notable</option>
+                                <option value="reference">📌 Reference</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Save Intel</button>
+                </form>
+            </div>
         </div>
 
         <!-- --- COMMAND CENTER TAB --- -->

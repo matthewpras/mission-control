@@ -1,11 +1,14 @@
 import json
 import time
 import datetime
+import os
 
 class KalshiPaperTrader:
     def __init__(self):
-        self.portfolio_file = "data/paper_portfolio.json"
-        self.trade_log = "logs/trades.log"
+        # Set paths relative to this script's directory
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        self.portfolio_file = os.path.join(base_dir, "data", "paper_portfolio.json")
+        self.trade_log = os.path.join(base_dir, "logs", "trades.log")
         self.initialize_portfolio()
 
     def initialize_portfolio(self):
@@ -29,6 +32,20 @@ class KalshiPaperTrader:
         with open(self.trade_log, 'a') as f:
             f.write(f"[{timestamp}] {message}\n")
 
+    def notify_telegram(self, message):
+        import subprocess
+        try:
+            cmd = [
+                "openclaw", "message", "send",
+                "--channel", "telegram",
+                "--target", "-1003882600560",
+                "--thread-id", "167",
+                "--message", message
+            ]
+            subprocess.run(cmd, check=True, shell=True)
+        except Exception as e:
+            print(f"Telegram notification failed: {e}")
+
     def simulate_trade(self, ticker, price_cents, quantity, side="YES"):
         cost = (price_cents / 100) * quantity
         if self.portfolio["balance"] >= cost:
@@ -42,7 +59,12 @@ class KalshiPaperTrader:
             }
             self.portfolio["positions"].append(position)
             self.save_portfolio()
-            self.log_trade(f"BOUGHT {quantity} {ticker} @ {price_cents}c | Balance: ${self.portfolio['balance']:.2f}")
+            log_msg = f"BOUGHT {quantity} {ticker} @ {price_cents}c | Balance: ${self.portfolio['balance']:.2f}"
+            self.log_trade(log_msg)
+            
+            # Send real-time notification
+            self.notify_telegram(f"🚀 **KALSHI TRADE EXECUTED**\n\n**Action:** {side} {quantity} shares\n**Market:** {ticker}\n**Price:** {price_cents}c\n**Remaining Balance:** ${self.portfolio['balance']:.2f}")
+            
             return True
         return False
 

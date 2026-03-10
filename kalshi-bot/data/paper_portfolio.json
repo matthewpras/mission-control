@@ -1,0 +1,620 @@
+{
+    "balance": 1017.21,
+    "positions": [
+        {
+            "ticker": "KXGDP-26APR30-T3.5",
+            "entry_price": 28,
+            "quantity": 178,
+            "side": "YES",
+            "timestamp": 1772604129.84511
+        },
+        {
+            "ticker": "KXGDP-26APR30-T3.5",
+            "entry_price": 28,
+            "quantity": 169,
+            "side": "YES",
+            "timestamp": 1772645183.6724594
+        },
+        {
+            "ticker": "KXGDP-26APR30-T2.0",
+            "entry_price": 62,
+            "quantity": 72,
+            "side": "NO",
+            "timestamp": 1772659188.1803546
+        },
+        {
+            "ticker": "KXGDP-26APR30-T2.0",
+            "entry_price": 55,
+            "quantity": 70,
+            "side": "YES",
+            "timestamp": 1772742905.8004494
+        },
+        {
+            "ticker": "KXGDP-26APR30-T2.0",
+            "entry_price": 63,
+            "quantity": 52,
+            "side": "NO",
+            "timestamp": 1772775249.5365772
+        },
+        {
+            "ticker": "KXGDP-26APR30-T2.0",
+            "entry_price": 56,
+            "quantity": 30,
+            "side": "YES",
+            "timestamp": 1772806174.4585788
+        },
+        {
+            "ticker": "KXGDP-26APR30-T3.0",
+            "entry_price": 32,
+            "quantity": 51,
+            "side": "YES",
+            "timestamp": 1772807100.8232048
+        },
+        {
+            "ticker": "KXGDP-26APR30-T1.0",
+            "entry_price": 76,
+            "quantity": 20,
+            "side": "YES",
+            "timestamp": 1772807115.1676044
+        },
+        {
+            "ticker": "KXGDP-26APR30-T1.5",
+            "entry_price": 65,
+            "quantity": 22,
+            "side": "YES",
+            "timestamp": 1772807432.7609327
+        },
+        {
+            "ticker": "KXGDP-26APR30-T2.0",
+            "entry_price": 51,
+            "quantity": 27,
+            "side": "YES",
+            "timestamp": 1772808663.6474817
+        },
+        {
+            "ticker": "KXGDP-26APR30-T1.5",
+            "entry_price": 62,
+            "quantity": 21,
+            "side": "YES",
+            "timestamp": 1772808677.631184
+        },
+        {
+            "ticker": "KXGDP-26APR30-T2.5",
+            "entry_price": 42,
+            "quantity": 30,
+            "side": "YES",
+            "timestamp": 1772811733.0942104
+        },
+        {
+            "ticker": "KXGDP-26APR30-T2.0",
+            "entry_price": 45,
+            "quantity": 27,
+            "side": "YES",
+            "timestamp": 1772811747.4646895
+        },
+        {
+            "ticker": "KXGDP-26APR30-T3.0",
+            "entry_price": 30,
+            "quantity": 38,
+            "side": "YES",
+            "timestamp": 1772814499.292792
+        },
+        {
+            "ticker": "KXGDP-26APR30-T2.0",
+            "entry_price": 40,
+            "quantity": 27,
+            "side": "YES",
+            "timestamp": 1772814825.388971
+        },
+        {
+            "ticker": "KXGDP-26APR30-T1.0",
+            "entry_price": 68,
+            "quantity": 15,
+            "side": "YES",
+            "timestamp": 1772815143.276623
+        },
+        {
+            "ticker": "KXGDP-26APR30-T3.5",
+            "entry_price": 24,
+            "quantity": 41,
+            "side": "NO",
+            "timestamp": 1772820031.281399
+        },
+        {
+            "ticker": "KXGDP-26APR30-T3.5",
+            "entry_price": 19,
+            "quantity": 49,
+            "side": "YES",
+            "timestamp": 1772836495.6160479
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.4",
+            "entry_price": 60,
+            "quantity": 15,
+            "side": "NO",
+            "timestamp": 1772855752.0599759
+        },
+        {
+            "ticker": "KXGDP-26APR30-T3.5",
+            "entry_price": 16,
+            "quantity": 53,
+            "side": "YES",
+            "timestamp": 1772895741.0134728
+        },
+        {
+            "ticker": "KXGDP-26APR30-T1.5",
+            "entry_price": 51,
+            "quantity": 15,
+            "side": "YES",
+            "timestamp": 1772937259.3792894
+        },
+        {
+            "ticker": "KXGDP-26APR30-T2.0",
+            "entry_price": 39,
+            "quantity": 19,
+            "side": "YES",
+            "timestamp": 1772982403.034121
+        },
+        {
+            "ticker": "KXGDP-26APR30-T1.5",
+            "entry_price": 60,
+            "quantity": 12,
+            "side": "NO",
+            "timestamp": 1772992187.2365143
+        },
+        {
+            "ticker": "KXGDP-26APR30-T4.5",
+            "entry_price": 7,
+            "quantity": 100,
+            "side": "NO",
+            "timestamp": 1773015693.1865673
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.6",
+            "entry_price": 2,
+            "quantity": 333,
+            "side": "YES",
+            "timestamp": 1773039503.5813205
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.2",
+            "entry_price": 2,
+            "quantity": 316,
+            "side": "YES",
+            "timestamp": 1773039541.1886306
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.1",
+            "entry_price": 68,
+            "quantity": 8,
+            "side": "YES",
+            "timestamp": 1773039564.3398876
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.0",
+            "entry_price": 2,
+            "quantity": 287,
+            "side": "YES",
+            "timestamp": 1773039589.210521
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.1",
+            "entry_price": 24,
+            "quantity": 22,
+            "side": "YES",
+            "timestamp": 1773040823.2957149
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.1",
+            "entry_price": 5,
+            "quantity": 103,
+            "side": "YES",
+            "timestamp": 1773042671.4847429
+        },
+        {
+            "ticker": "KXGDP-26APR30-T2.0",
+            "entry_price": 39,
+            "quantity": 12,
+            "side": "YES",
+            "timestamp": 1773046354.1678188
+        },
+        {
+            "ticker": "KXGDP-26APR30-T1.0",
+            "entry_price": 65,
+            "quantity": 7,
+            "side": "YES",
+            "timestamp": 1773046370.2340493
+        },
+        {
+            "ticker": "KXGDP-26APR30-T2.0",
+            "entry_price": 35,
+            "quantity": 12,
+            "side": "YES",
+            "timestamp": 1773047604.6835213
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.5",
+            "entry_price": 6,
+            "quantity": 71,
+            "side": "YES",
+            "timestamp": 1773047931.6453125
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.5",
+            "entry_price": 32,
+            "quantity": 12,
+            "side": "NO",
+            "timestamp": 1773048260.1382957
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.5",
+            "entry_price": 6,
+            "quantity": 64,
+            "side": "YES",
+            "timestamp": 1773048588.1124783
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.5",
+            "entry_price": 1,
+            "quantity": 366,
+            "side": "YES",
+            "timestamp": 1773051349.0765202
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.6",
+            "entry_price": 14,
+            "quantity": 24,
+            "side": "NO",
+            "timestamp": 1773073314.9756677
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.7",
+            "entry_price": 9,
+            "quantity": 36,
+            "side": "NO",
+            "timestamp": 1773075771.4658763
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.5",
+            "entry_price": 36,
+            "quantity": 8,
+            "side": "NO",
+            "timestamp": 1773075786.6633017
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.2",
+            "entry_price": 91,
+            "quantity": 3,
+            "side": "NO",
+            "timestamp": 1773075801.7091172
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.1",
+            "entry_price": 94,
+            "quantity": 3,
+            "side": "NO",
+            "timestamp": 1773075816.5176723
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.0",
+            "entry_price": 94,
+            "quantity": 2,
+            "side": "NO",
+            "timestamp": 1773075831.2379608
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.5",
+            "entry_price": 42,
+            "quantity": 6,
+            "side": "NO",
+            "timestamp": 1773081941.6845288
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.5",
+            "entry_price": 36,
+            "quantity": 6,
+            "side": "YES",
+            "timestamp": 1773095983.561158
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.5",
+            "entry_price": 47,
+            "quantity": 5,
+            "side": "NO",
+            "timestamp": 1773100280.2318947
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.4",
+            "entry_price": 78,
+            "quantity": 2,
+            "side": "NO",
+            "timestamp": 1773100310.6151204
+        },
+        {
+            "ticker": "KXPCECORE-26NOV-T0.4",
+            "entry_price": 9,
+            "quantity": 24,
+            "side": "NO",
+            "timestamp": 1773103372.9773848
+        },
+        {
+            "ticker": "KXPCECORE-26OCT-T0.4",
+            "entry_price": 9,
+            "quantity": 23,
+            "side": "NO",
+            "timestamp": 1773103388.46984
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.7",
+            "entry_price": 1,
+            "quantity": 199,
+            "side": "YES",
+            "timestamp": 1773111951.8678045
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.6",
+            "entry_price": 15,
+            "quantity": 12,
+            "side": "YES",
+            "timestamp": 1773111980.4412532
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.2",
+            "entry_price": 1,
+            "quantity": 180,
+            "side": "YES",
+            "timestamp": 1773111995.1297011
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.1",
+            "entry_price": 69,
+            "quantity": 2,
+            "side": "YES",
+            "timestamp": 1773112009.9807882
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.0",
+            "entry_price": 1,
+            "quantity": 164,
+            "side": "YES",
+            "timestamp": 1773112024.7176769
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.3",
+            "entry_price": 60,
+            "quantity": 2,
+            "side": "YES",
+            "timestamp": 1773112344.3975236
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.3",
+            "entry_price": 6,
+            "quantity": 25,
+            "side": "YES",
+            "timestamp": 1773112969.1178875
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.1",
+            "entry_price": 25,
+            "quantity": 5,
+            "side": "YES",
+            "timestamp": 1773113898.7812016
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.1",
+            "entry_price": 6,
+            "quantity": 22,
+            "side": "YES",
+            "timestamp": 1773118486.0573835
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.3",
+            "entry_price": 3,
+            "quantity": 43,
+            "side": "YES",
+            "timestamp": 1773120026.998308
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.8",
+            "entry_price": 7,
+            "quantity": 17,
+            "side": "NO",
+            "timestamp": 1773125528.4440439
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.7",
+            "entry_price": 9,
+            "quantity": 13,
+            "side": "NO",
+            "timestamp": 1773125544.53626
+        },
+        {
+            "ticker": "KXGDP-26APR30-T4.5",
+            "entry_price": 2,
+            "quantity": 55,
+            "side": "YES",
+            "timestamp": 1773125561.0261486
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.4",
+            "entry_price": 62,
+            "quantity": 1,
+            "side": "YES",
+            "timestamp": 1773126498.9191322
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.8",
+            "entry_price": 2,
+            "quantity": 51,
+            "side": "YES",
+            "timestamp": 1773144207.9352183
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.5",
+            "entry_price": 43,
+            "quantity": 2,
+            "side": "YES",
+            "timestamp": 1773144238.5097098
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.4",
+            "entry_price": 70,
+            "quantity": 1,
+            "side": "NO",
+            "timestamp": 1773144261.882432
+        },
+        {
+            "ticker": "KXU3-26MAR-T4.3",
+            "entry_price": 88,
+            "quantity": 1,
+            "side": "NO",
+            "timestamp": 1773144284.972389
+        }
+    ],
+    "history": [
+        {
+            "ticker": "KXU3-26FEB-T4.1",
+            "side": "YES",
+            "quantity": 60,
+            "entry_price": 71,
+            "settled_at": "4.4%",
+            "payout": 0,
+            "profit_loss": -42.599999999999994
+        },
+        {
+            "ticker": "KXU3-26FEB-T4.1",
+            "side": "NO",
+            "quantity": 44,
+            "entry_price": 91,
+            "settled_at": "4.4%",
+            "payout": 44.0,
+            "profit_loss": 3.960000000000001
+        },
+        {
+            "ticker": "KXU3-26FEB-T4.2",
+            "side": "YES",
+            "quantity": 57,
+            "entry_price": 64,
+            "settled_at": "4.4%",
+            "payout": 0,
+            "profit_loss": -36.480000000000004
+        },
+        {
+            "ticker": "KXU3-26FEB-T4.3",
+            "side": "YES",
+            "quantity": 97,
+            "entry_price": 36,
+            "settled_at": "4.4%",
+            "payout": 0,
+            "profit_loss": -34.92
+        },
+        {
+            "ticker": "KXU3-26FEB-T4.1",
+            "side": "YES",
+            "quantity": 36,
+            "entry_price": 87,
+            "settled_at": "4.4%",
+            "payout": 0,
+            "profit_loss": -31.32
+        },
+        {
+            "ticker": "KXU3-26FEB-T4.4",
+            "side": "YES",
+            "quantity": 751,
+            "entry_price": 4,
+            "settled_at": "4.4%",
+            "payout": 751.0,
+            "profit_loss": 720.96
+        },
+        {
+            "ticker": "KXU3-26FEB-T4.1",
+            "side": "YES",
+            "quantity": 41,
+            "entry_price": 69,
+            "settled_at": "4.4%",
+            "payout": 0,
+            "profit_loss": -28.29
+        },
+        {
+            "ticker": "KXU3-26FEB-T4.1",
+            "side": "NO",
+            "quantity": 30,
+            "entry_price": 88,
+            "settled_at": "4.4%",
+            "payout": 30.0,
+            "profit_loss": 3.6000000000000014
+        },
+        {
+            "ticker": "KXU3-26FEB-T4.1",
+            "side": "YES",
+            "quantity": 33,
+            "entry_price": 78,
+            "settled_at": "4.4%",
+            "payout": 0,
+            "profit_loss": -25.740000000000002
+        },
+        {
+            "ticker": "KXU3-26FEB-T4.1",
+            "side": "NO",
+            "quantity": 26,
+            "entry_price": 93,
+            "settled_at": "4.4%",
+            "payout": 26.0,
+            "profit_loss": 1.8200000000000003
+        },
+        {
+            "ticker": "KXU3-26FEB-T4.3",
+            "side": "YES",
+            "quantity": 129,
+            "entry_price": 18,
+            "settled_at": "4.4%",
+            "payout": 0,
+            "profit_loss": -23.22
+        },
+        {
+            "ticker": "KXU3-26FEB-T4.3",
+            "side": "NO",
+            "quantity": 85,
+            "entry_price": 26,
+            "settled_at": "4.4%",
+            "payout": 85.0,
+            "profit_loss": 62.9
+        },
+        {
+            "ticker": "KXU3-26FEB-T4.2",
+            "side": "NO",
+            "quantity": 24,
+            "entry_price": 86,
+            "settled_at": "4.4%",
+            "payout": 24.0,
+            "profit_loss": 3.3599999999999994
+        },
+        {
+            "ticker": "KXU3-26FEB-T4.2",
+            "side": "YES",
+            "quantity": 25,
+            "entry_price": 78,
+            "settled_at": "4.4%",
+            "payout": 0,
+            "profit_loss": -19.5
+        },
+        {
+            "ticker": "KXU3-26FEB-T4.2",
+            "side": "NO",
+            "quantity": 21,
+            "entry_price": 87,
+            "settled_at": "4.4%",
+            "payout": 21.0,
+            "profit_loss": 2.7300000000000004
+        },
+        {
+            "ticker": "KXU3-26FEB-T4.2",
+            "side": "NO",
+            "quantity": 19,
+            "entry_price": 92,
+            "settled_at": "4.4%",
+            "payout": 19.0,
+            "profit_loss": 1.5199999999999996
+        }
+    ]
+}

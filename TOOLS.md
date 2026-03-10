@@ -17,11 +17,16 @@ Things like:
 
 ```markdown
 ### Email
-- **Address**: `kris.sentinel.control@gmail.com`
+- **Primary Address**: `kris.openclaw@agentmail.to`
+- **Fallback Address**: `kris.sentinel.control@gmail.com`
 - **SMTP**: `smtp.gmail.com:465` (SSL/TLS)
 - **Login**: `kris.sentinel.control@gmail.com`
 - **App Password**: `pjgb qxvm gnkz pqso`
-- **Note**: Credentials stored for automated briefing delivery.
+- **Note**: `agentmail.to` is the primary execution address. Gmail credentials stored for automated briefing delivery fallback.
+
+### Web & Search
+- **Default Browser:** OpenClaw Agent Browser (`browser` tool)
+- **Fallback Search:** Brave Search API (`web_search` tool)
 
 ### Telegram
 - **Primary Chat ID**: `8528907054` (Matthew Prasanth)
@@ -31,10 +36,10 @@ Things like:
   - 🤝 **CRM**: threadId `10`
   - 📧 **Email**: threadId `11`
   - 🧠 **Knowledge Base**: threadId `12`
-  - 📊 **Meta-Analysis**: threadId `13`
+  - 📊 **Meta-Analysis**: threadId `422`
   - 🎥 **Video Ideas**: threadId `14`
   - 💰 **Earnings**: threadId `15`
-  - ⚠️ **Cron Updates (Failures)**: threadId `16`
+  - ⚠️ **Cron Updates (Failures)**: threadId `421`
   - 🔒 **Financials (LOCKED)**: threadId `17`
   - 🏥 **Health**: threadId `18`
   - 🛍️ **Depop/E-comm**: threadId `19`
