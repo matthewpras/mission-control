@@ -1,0 +1,34 @@
+{
+  "people": [
+    {
+      "name": "Sarah Jenkins",
+      "title": "Founder @ PhillySaaS",
+      "email": "sarah@phillysaas.io",
+      "linkedin_url": "https://linkedin.com/in/sjenkins",
+      "organization": {
+        "name": "PhillySaaS",
+        "website_url": "https://phillysaas.io"
+      }
+    },
+    {
+      "name": "Marcus Thorne",
+      "title": "CEO @ BlueRocket Marketing",
+      "email": "m.thorne@bluerocket.agency",
+      "linkedin_url": "https://linkedin.com/in/mthorne",
+      "organization": {
+        "name": "BlueRocket Marketing",
+        "website_url": "https://bluerocket.agency"
+      }
+    },
+    {
+      "name": "Elena Rossi",
+      "title": "Owner @ Luxe-Home Shopify",
+      "email": "elena@luxehomes.com",
+      "linkedin_url": "https://linkedin.com/in/erossi",
+      "organization": {
+        "name": "Luxe-Home",
+        "website_url": "https://luxehomes.com"
+      }
+    }
+  ]
+}
